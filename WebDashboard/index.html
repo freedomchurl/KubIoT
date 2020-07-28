@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <link rel="stylesheet" href="index.css" type="text/css">
+    <link rel="stylesheet" href="css/index.css" type="text/css">
+    <link rel="stylesheet" href="css/bootstrap.css" type="text/css">
 </head>
 <body>
     <div id="head-title">
@@ -20,18 +21,35 @@
         </ul>
     </div>
     <div id="content">
-        <div id="content-buttons">
-            버튼들 위치
+        <div id="content-buttons"> <!--class="d-flex justify-content-between">-->
+            <button type="button" style="float:right">카드 보기</button>
+            <button type="button" sytle="float:right">목록 보기</button>
         </div>
 
         <div id="card-view">
             <!--여기에 card view가 되어야 한다.-->
+            asdasdada
         </div>
+
+        <div class="text-center">
+            <ul class="pagination">
+                <li><a href="#">1</a></li>
+                <li><a href="#">2</a></li>
+                <li><a href="#">3</a></li>
+                <li><a href="#">4</a></li>
+                <li><a href="#">5</a></li>
+            </ul>
+        </div>
+
+        <!--<button type="button">기본 버튼</button>
+        <button type="button" class="btn btn-primary">기본 버튼2</button>-->
     </div>
     
     <div id="footer">
         Footer
     </div>
 
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script type="text/javascript" src="js/bootstrap.js"></script>
 </body>
 </html>

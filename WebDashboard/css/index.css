@@ -18,6 +18,14 @@
         clear:both;
         align-content: center;
     }
-    #content-buttons{
-        float: right;
+    /*#content-buttons{
+        clear:both;
+    }*/
+    .text-center{
+        clear: both;
+    }
+    
+    #card-view{
+        clear:both;
+        height: 300px;
     }

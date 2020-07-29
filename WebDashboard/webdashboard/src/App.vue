@@ -1,28 +1,50 @@
 <template>
-  <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
-  </div>
+    <div id="app">
+    <InitHeader></InitHeader>
+    <InitForm></InitForm>
+    <!-- <InitFooter></InitFooter>-->
+    <button>변경</button>
+    <p>
+    <router-link to="/a">Login</router-link>
+    <router-link to="/b">Main</router-link> 
+    </p>
+    <router-view></router-view>
+    </div>
 </template>
 
-<script>
-import HelloWorld from './components/HelloWorld.vue'
 
-export default {
-  name: 'App',
-  components: {
-    HelloWorld
-  }
+<script>
+import InitialHeaderVue from './components/initpage/InitialHeader.vue'
+import InitialFormVue from './components/initpage/InitialForm.vue'
+//import InitialFooterVue from './components/initpage/InitialFooter.vue'
+
+   
+
+
+export default{
+  components:{
+    'InitHeader':InitialHeaderVue,
+    'InitForm':InitialFormVue
+    //'InitFooter':InitialFooterVue
+    }
 }
 </script>
 
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
+  body{
+  text-align:center;
+  /* background-color:#F6F6F8; */
+  }
+  input{
+    border-style:groove;
+    width:200px;
+  }
+  button{
+    border-style:groove;
+  }
+  .shadow{
+    box-shadow:5px 10px 10px rgba(0,0,0,0.3)
+  }
 </style>
+
+<!--npm run serve -->

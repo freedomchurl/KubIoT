@@ -1,4 +1,4 @@
-package vaninside.kubiot.collecotr.controller.config;
+package vaninside.kubiot.collector.controller.config;
 import org.eclipse.paho.client.mqttv3.IMqttClient;
 
 import org.eclipse.paho.client.mqttv3.MqttClient;

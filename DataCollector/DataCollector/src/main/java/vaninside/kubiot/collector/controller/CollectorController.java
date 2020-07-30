@@ -2,11 +2,14 @@ package vaninside.kubiot.collector.controller;
 
 import java.awt.image.BufferedImage;
 import java.io.BufferedOutputStream;
+import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -15,6 +18,10 @@ import javax.annotation.Resource;
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.FSDataOutputStream;
+import org.apache.hadoop.fs.FileSystem;
+import org.apache.hadoop.fs.Path;
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallback;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
@@ -55,7 +62,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import vaninside.kubiot.collecotr.controller.config.Mqtt;
+import vaninside.kubiot.collector.controller.config.Mqtt;
 import vaninside.kubiot.collector.model.MqttSubscribeModel;
 import vaninside.kubiot.collector.service.CollectorService;
 
@@ -68,13 +75,10 @@ public class CollectorController {
 	public static String topic = "topic";
 	
 	public CollectorController() throws MqttException {
+		// Subscribe to topic.
 		Mqtt.getInstance().setCallback(new MqttCallback() {
-
 			@Override
-			public void connectionLost(Throwable cause) {
-				// TODO Auto-generated method stub
-				
-			}
+			public void connectionLost(Throwable cause) {}
 
 			@Override
 			public void messageArrived(String topic, MqttMessage message) throws Exception {
@@ -83,11 +87,7 @@ public class CollectorController {
 			}
 
 			@Override
-			public void deliveryComplete(IMqttDeliveryToken token) {
-				// TODO Auto-generated method stub
-				
-			}
-			
+			public void deliveryComplete(IMqttDeliveryToken token) {}
 		});
 		Mqtt.getInstance().subscribe(topic);
 	}
@@ -96,7 +96,7 @@ public class CollectorController {
 	CollectorService service;
 	
 	@RequestMapping(value="/sendFData", method=RequestMethod.POST)
-	public HashMap<String, Object> HTTP_ADataReceive(@RequestBody HashMap<String, Object> map) {
+	public HashMap<String, Object> HTTP_ADataReceive(@RequestBody HashMap<String, Object> map) throws IOException {
 		String deviceId = (String) map.get("deviceId");
 		String dataType = (String) map.get("type");
 		String data = (String) map.get("data");
@@ -105,8 +105,8 @@ public class CollectorController {
 		
 		boolean result = service.saveData(deviceId, dataType, data, group, time); 
 		
+		// return json
 		HashMap<String, Object> hashMap = new HashMap<String, Object>();
-	    
         hashMap.put("status", result?1:0);
         
 		return hashMap;
@@ -115,8 +115,8 @@ public class CollectorController {
 	@RequestMapping(value="/sendBData", method=RequestMethod.POST)
 	@ResponseStatus(HttpStatus.CREATED)
 	public String HTTP_BDataReceive(
-			@RequestParam("deviceId") String deviceId,
-			@RequestParam("file") List<MultipartFile> files) throws Exception {
+			@RequestParam("deviceId") String deviceId, @RequestParam("type") String type, @RequestParam("group") String group, @RequestParam("time") String time, 
+			@RequestParam("data") List<MultipartFile> files) throws Exception {
 		
 		System.out.println(deviceId);
 		for (MultipartFile file : files) {

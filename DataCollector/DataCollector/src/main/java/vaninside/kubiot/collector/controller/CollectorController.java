@@ -22,8 +22,10 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FSDataOutputStream;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
+import org.eclipse.paho.client.mqttv3.IMqttClient;
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallback;
+import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
@@ -69,64 +71,150 @@ import vaninside.kubiot.collector.service.CollectorService;
 @RestController
 @SpringBootApplication
 @IntegrationComponentScan
-
 public class CollectorController {
-
 	public static String topic = "topic";
-	
-	public CollectorController() throws MqttException {
-		// Subscribe to topic.
-		Mqtt.getInstance().setCallback(new MqttCallback() {
-			@Override
-			public void connectionLost(Throwable cause) {}
-
-			@Override
-			public void messageArrived(String topic, MqttMessage message) throws Exception {
-				// TODO Auto-generated method stub
-				System.out.println("okay");
-			}
-
-			@Override
-			public void deliveryComplete(IMqttDeliveryToken token) {}
-		});
-		Mqtt.getInstance().subscribe(topic);
-	}
-	
+	private static final String MQTT_PUBLISHER_ID = "collector-server";
+	private static final String MQTT_SERVER_ADDRES= "tcp://127.0.0.1:1883";
+	private static IMqttClient instance;
+   
 	@Autowired
 	CollectorService service;
 	
+	public CollectorController() throws MqttException{
+		init();
+	}
+	
+	public void init() throws MqttException {
+		// Mqtt Init
+        if (instance == null) {
+            instance = new MqttClient(MQTT_SERVER_ADDRES, MQTT_PUBLISHER_ID);                
+        }
+
+        MqttConnectOptions options = new MqttConnectOptions();
+        options.setAutomaticReconnect(true);
+        options.setCleanSession(true);
+        options.setConnectionTimeout(10);
+
+        if (!instance.isConnected()) {
+            instance.connect(options);
+            instance.setCallback(new MqttCallback() {
+				@Override
+				public void connectionLost(Throwable cause) {}
+
+				@Override
+				public void messageArrived(String topic, MqttMessage message) throws Exception {
+					System.out.println("Message Arrived");
+					MQTT_DataReceive(message);
+				}
+
+				@Override
+				public void deliveryComplete(IMqttDeliveryToken token) {}
+            }); 
+        }
+        
+        // Subscribe to topic
+        instance.subscribe(topic);
+	}
+	
 	@RequestMapping(value="/sendFData", method=RequestMethod.POST)
-	public HashMap<String, Object> HTTP_ADataReceive(@RequestBody HashMap<String, Object> map) throws IOException {
+	public HashMap<String, Object> HTTP_FDataReceive(@RequestBody HashMap<String, Object> map) throws IOException {
 		String deviceId = (String) map.get("deviceId");
 		String dataType = (String) map.get("type");
-		String data = (String) map.get("data");
-		String group = (String) map.get("group");
-		String time = (String) map.get("time");
+		ArrayList<Double> data = (ArrayList<Double>) map.get("data");
+		ArrayList<String> time = (ArrayList<String>) map.get("time");
+		String regi = (String) map.get("regi");
 		
-		boolean result = service.saveData(deviceId, dataType, data, group, time); 
+		System.out.println(data.get(0));
+		
+		boolean result = service.saveData(deviceId, dataType, data, time, regi); 
 		
 		// return json
 		HashMap<String, Object> hashMap = new HashMap<String, Object>();
         hashMap.put("status", result?1:0);
-        
+        if(regi.equals("0")) {
+        	 hashMap.put("regi", result?"1":"0");
+        } else {
+        	 hashMap.put("regi", "1");
+        }
 		return hashMap;
 	}
 	
 	@RequestMapping(value="/sendBData", method=RequestMethod.POST)
 	@ResponseStatus(HttpStatus.CREATED)
-	public String HTTP_BDataReceive(
-			@RequestParam("deviceId") String deviceId, @RequestParam("type") String type, @RequestParam("group") String group, @RequestParam("time") String time, 
+	public HashMap<String, Object> HTTP_BDataReceive(
+			@RequestParam("deviceId") String deviceId, @RequestParam("type") String type, @RequestParam("regi") String regi, @RequestParam("time") String time, 
 			@RequestParam("data") List<MultipartFile> files) throws Exception {
 		
-		System.out.println(deviceId);
+		boolean result = false;
 		for (MultipartFile file : files) {
+			result = service.saveData(deviceId, type, file, time, regi); 
+			/*
 			String originalfileName = file.getOriginalFilename();
 			File dest = new File("C:/Image/" + originalfileName);
 			file.transferTo(dest);
-			// TODO
+		*/
 		}
 		
-		return deviceId;
+		
+		// return json
+		HashMap<String, Object> hashMap = new HashMap<String, Object>();
+        hashMap.put("status", result?1:0);
+        if(regi.equals("0")) {
+       	 hashMap.put("regi", result?"1":"0");
+       } else {
+       	 hashMap.put("regi", "1");
+       }
+		return hashMap;
+	}
+	
+	
+	public HashMap<String, Object> MQTT_DataReceive(MqttMessage msg) throws ParseException {
+		System.out.println(1);
+		JSONParser parser = new JSONParser();
+		JSONObject obj = new JSONObject();
+		
+		System.out.println(2);
+		System.out.println(msg);
+		
+		String[] str = msg.toString().split("!@", 2);
+		
+		// str[0] : json info, str[1] : data 
+		System.out.println(3);
+
+		System.out.println(str.length);
+		obj = (JSONObject) parser.parse(str[0]);
+		System.out.println(3);
+		String deviceId = (String) obj.get("deviceId");
+		String dataType = (String) obj.get("type");
+		//String data = (String) obj.get("data");
+		String regi = (String) obj.get("regi");
+		
+		boolean result;
+		if(str.length == 1) {
+			// float data
+			System.out.println("insside iffff");
+			ArrayList<Double> data = (ArrayList<Double>) obj.get("data");
+			ArrayList<String> time =  (ArrayList<String>) obj.get("time");
+			result = service.saveData(deviceId, dataType, data, time, regi);
+		} 
+		
+		else { 
+			// image data
+			String data = str[1];
+			String time = (String) obj.get("time");
+			result = service.saveData(deviceId, dataType, data, time, regi);
+		}
+		
+		// return json
+		HashMap<String, Object> hashMap = new HashMap<String, Object>();
+        hashMap.put("status", result?1:0);
+        if(regi.equals("0")) {
+       	 hashMap.put("regi", result?"1":"0");
+       } else {
+       	 hashMap.put("regi", "1");
+       }
+		return hashMap;
+		
 	}
 	
 	public void MQTT_FDataReceive(String msg) throws ParseException {
@@ -148,27 +236,20 @@ public class CollectorController {
 	}
 	
 	public void MQTT_BDataReceive(String msg) throws ParseException, IOException {
-
-		
 		JSONParser parser = new JSONParser();
-
-		System.out.println("here");
 		JSONObject obj = new JSONObject();
-
-		System.out.println("here");
+		
 		String[] str = msg.split("!@", 2);
+		// str[0] : json info, str[1] : data 
 		
 		System.out.println(str.length);
-		System.out.println(str[0]);
-		System.out.println(str[1]);
-		
 		obj = (JSONObject) parser.parse(str[0]);
 		
 		System.out.println("here");
 		String deviceId = (String) obj.get("deviceId");
 		//String dataType = (String) obj.get("type");
 		//String data = (String) obj.get("data");
-		String data = str[1];
+		// String data = str[1];
 		//String group = (String) obj.get("group");
 		//String time = (String) obj.get("time");
 		//String filename = (String) obj.get("filename");
@@ -176,74 +257,21 @@ public class CollectorController {
 		System.out.println("here2");
 		//System.out.println(filename);
 		//System.out.println(data);
-		
-		
+		/*
 		 File lOutFile = new File("C:/Image/fin_image.png");
-
          FileOutputStream lFileOutputStream = new FileOutputStream(lOutFile);
-         
          byte[] re = binaryStringToByteArray(data);
          lFileOutputStream.write(re);
-
          lFileOutputStream.close();
+         */
 	}
 	
 	@Override
 	protected void finalize() throws Throwable {
-		// TODO Auto-generated method stub
 		super.finalize();
 		Mqtt.getInstance().disconnect();
 	}
 
-	public static byte[] binaryStringToByteArray(String s) {
-        int count = s.length() / 8;
-        byte[] b = new byte[count];
-        for (int i = 1; i < count; ++i) {
-            String t = s.substring((i - 1) * 8, i * 8);
-            b[i - 1] = binaryStringToByte(t);
-        }
-        return b;
-    }
-
-    public static byte binaryStringToByte(String s) {
-        byte ret = 0, total = 0;
-        for (int i = 0; i < 8; ++i) {
-            ret = (s.charAt(7 - i) == '1') ? (byte) (1 << i) : 0;
-            total = (byte) (ret | total);
-        }
-        return total;
-    }
-}
-
-class MessageCallback implements MqttCallback {
-
-	@Override
-	public void connectionLost(Throwable cause) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void messageArrived(String topic, MqttMessage message) throws Exception {
-		// TODO Auto-generated method stub
-		System.out.println("inside");
-		CollectorController c = new CollectorController();
-		MqttSubscribeModel mqttSubscribeModel = new MqttSubscribeModel();
-        //mqttSubscribeModel.setId(mqttMessage.getId());
-
-        mqttSubscribeModel.setId(message.getId());
-        mqttSubscribeModel.setMessage(new String(message.getPayload()));
-        mqttSubscribeModel.setQos(message.getQos());   
-        
-        c.MQTT_FDataReceive(mqttSubscribeModel.getMessage());
-	
-	}
-
-	@Override
-	public void deliveryComplete(IMqttDeliveryToken token) {
-		// TODO Auto-generated method stub
-		
-	}
 	
 }
 

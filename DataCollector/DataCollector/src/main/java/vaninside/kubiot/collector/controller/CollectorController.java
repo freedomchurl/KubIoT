@@ -10,6 +10,11 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -47,6 +52,7 @@ import org.springframework.integration.core.MessageProducer;
 import org.springframework.integration.mqtt.inbound.MqttPahoMessageDrivenChannelAdapter;
 import org.springframework.integration.mqtt.outbound.MqttPahoMessageHandler;
 import org.springframework.integration.mqtt.support.DefaultPahoMessageConverter;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.MessageHandler;
@@ -63,6 +69,7 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+
 
 import vaninside.kubiot.collector.controller.config.Mqtt;
 import vaninside.kubiot.collector.model.MqttSubscribeModel;
@@ -111,13 +118,16 @@ public class CollectorController {
 				public void deliveryComplete(IMqttDeliveryToken token) {}
             }); 
         }
-        
         // Subscribe to topic
         instance.subscribe(topic);
 	}
+
+	
+	
 	
 	@RequestMapping(value="/sendFData", method=RequestMethod.POST)
-	public HashMap<String, Object> HTTP_FDataReceive(@RequestBody HashMap<String, Object> map) throws IOException {
+	public HashMap<String, Object> HTTP_FDataReceive(@RequestBody HashMap<String, Object> map) throws IOException, ClassNotFoundException, SQLException {
+		
 		String deviceId = (String) map.get("deviceId");
 		String dataType = (String) map.get("type");
 		ArrayList<Double> data = (ArrayList<Double>) map.get("data");

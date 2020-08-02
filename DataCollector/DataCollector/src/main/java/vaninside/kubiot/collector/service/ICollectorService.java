@@ -12,7 +12,7 @@ public interface ICollectorService {
 	boolean saveDoubleData(String deviceId, ArrayList<Double> data, ArrayList<String> time);
 	boolean saveImageData(String deviceId, String data, String time);
 	boolean saveImageData(String deviceId, MultipartFile data, String time);
-	boolean register(String deviceId);
+	boolean register(String deviceId, String dataType);
 	
 	void createFolder();
 }

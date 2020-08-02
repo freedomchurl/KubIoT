@@ -27,7 +27,7 @@ public class CollectorService implements ICollectorService {
 		// save float data
 		if(regi.equals("0")) {
 			// 등록안된 기기
-			if(!register(deviceId)) return false;
+			if(!register(deviceId, dataType)) return false;
 		} 
 		
 		return saveDoubleData(deviceId, data, time);
@@ -37,7 +37,7 @@ public class CollectorService implements ICollectorService {
 	public boolean saveData(String deviceId, String dataType, MultipartFile data, String time, String regi) {
 		if(regi.equals("0")) {
 			// 등록안된 기기
-			if(!register(deviceId)) return false;
+			if(!register(deviceId, dataType)) return false;
 		} 
 		
 		return saveImageData(deviceId, data, time);
@@ -48,7 +48,7 @@ public class CollectorService implements ICollectorService {
 		System.out.println("inside");
 		if(regi.equals("0")) {
 			// 등록안된 기기
-			if(!register(deviceId)) return false;
+			if(!register(deviceId, dataType)) return false;
 		} 
 		
 		if(dataType.equals("image")) {
@@ -178,8 +178,8 @@ public class CollectorService implements ICollectorService {
 	}
 
 	@Override
-	public boolean register(String deviceId) {
-		return dao.register();
+	public boolean register(String deviceId, String dataType) {
+		return dao.register(deviceId, dataType);
 	}
 
 	@Override

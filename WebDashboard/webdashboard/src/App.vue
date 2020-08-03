@@ -1,31 +1,38 @@
 <template>
     <div id="app">
-    <InitHeader></InitHeader>
-    <InitForm></InitForm>
+    <!-- <InitHeader></InitHeader>
+    <InitForm></InitForm> -->
     <!-- <InitFooter></InitFooter>-->
-    <button>변경</button>
-    <p>
+    <!-- <button>변경</button> -->
+    <!-- <p>
     <router-link to="/a">Login</router-link>
     <router-link to="/b">Main</router-link> 
     </p>
+    <router-view></router-view> -->
     <router-view></router-view>
     </div>
 </template>
 
 
 <script>
-import InitialHeaderVue from './components/initpage/InitialHeader.vue'
-import InitialFormVue from './components/initpage/InitialForm.vue'
+// import InitialHeaderVue from './components/initpage/InitialHeader.vue'
+// import InitialFormVue from './components/initpage/InitialForm.vue'
 //import InitialFooterVue from './components/initpage/InitialFooter.vue'
 
-   
+//import MainDashboard from './components/mainpage/MainDashboard.vue'
 
 
 export default{
+  beforeCreate(){
+    console.log("Created Phaze");
+    // this.$router.push(this.$route.query.redirect || '/initProject'); -> Redirect 하는 부분
+    //this.$router.push(this.$route.query.redirect || '/loginProject')
+  },
   components:{
-    'InitHeader':InitialHeaderVue,
-    'InitForm':InitialFormVue
-    //'InitFooter':InitialFooterVue
+    // 'InitHeader':InitialHeaderVue,
+    // 'InitForm':InitialFormVue,
+    //'InitFooter':InitialFooterVue,
+    //'MainDashboard':MainDashboard
     }
 }
 </script>

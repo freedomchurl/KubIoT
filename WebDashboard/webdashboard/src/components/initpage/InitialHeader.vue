@@ -1,7 +1,7 @@
 <template>
     <header>
-        <h1>KubIoT 초기 설정 페이지</h1>
         <img v-bind:class="mainimg" src="../../../static/img/IoT_main.jpg">
+        <h1>KubIoT 초기 설정</h1>
     </header>
 </template>
 
@@ -18,11 +18,12 @@ export default{
 <style scoped>
     h1{
         color:#2F3B52;
-        font-weight: 900;
+        /* font-weight: 900; */
         margin:2.5rem 0 1.5rem;
     }
     .mimg{
         width:300px;
         height: 200px;
+        margin-top: 5rem;
     }
 </style>

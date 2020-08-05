@@ -1,7 +1,8 @@
 <template>
     <header>
         <img v-bind:class="mainimg" src="../../../static/img/IoT_main.jpg">
-        <h1>KubIoT 로그인</h1>
+        <!-- <h1>KubIoT 로그인</h1> -->
+        <h1>로그인</h1>
     </header>
 </template>
 
@@ -11,7 +12,12 @@ export default{
         return {
         mainimg:'mimg' // 싱글파일 컴포넌트에서는 이렇게 바뀌었음.
         }
-    }
+    },
+    props:{
+        projectname:{
+
+        }
+    },
 }
 </script>
 

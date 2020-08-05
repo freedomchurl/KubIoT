@@ -13,6 +13,7 @@
 </template>
 
 <script>
+import axios from 'axios'
 export default{
     data(){
         return{
@@ -22,13 +23,33 @@ export default{
             textinput:'form-control'
         }
     },
+    // props:{
+    //     titleprops:{
+    //         default:''
+    //     }
+    // },
     methods:{
         loginProject(){
+            var vm = this;
             console.log(this.newProjectID + ' ' + this.newProjectPass);
             // 이 부분에, 암호화를 거쳐서, MySQL에다가 저장해야한다.
             console.log("Login Project")
             // Redirect 테스트
-            this.$router.push(this.$route.query.redirect || '/main'); //-> Redirect 하는 부분
+            axios.post('http://49.50.174.246:7676/project/admin/signin', {adminid: vm.newProjectID, adminpwd:vm.newProjectPass})
+                    .then(res=>{
+                        if(res.data.status == true)
+                        {
+                            console.log("Success");
+                            //this.$router.push(this.$route.query.redirect || '/main'); //-> Redirect 하는 부분
+                            this.$router.push('/main');
+                            // console.log('Params = ' + vm.titleprops)
+                            //this.$router.push({name:'main',params:{projectname:vm.titleprops}})
+                        }
+                        else{
+                            alert('로그인 오류입니다. 아이디와 비밀번호를 확인하세요.')
+                        }
+            })
+            
         }
     }
 }

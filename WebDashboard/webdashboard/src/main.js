@@ -16,13 +16,13 @@ Vue.use(VueRouter)
 //     {
 //       path:'/',
 //       component:App
-//     }
+//     }//
 //   ]
 // });
 
 new Vue({
   render: h => h(App),
-  router:router,
+  router:router
 }).$mount('#app')
 
-console.log('Problem');
+//onsole.log('Problem');

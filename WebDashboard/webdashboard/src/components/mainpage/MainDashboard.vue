@@ -1,5 +1,6 @@
 <template>
     <div>
+        <!-- {{this.$router.projectname}} -->
         <MainHeader></MainHeader>
         <div id='flexmain'>
         <!-- <MainSide v-on:menuselect="clickMenu" ref="select"></MainSide>
@@ -26,7 +27,7 @@ export default {
         'MainContent':MainContentVue
     },
     beforeMount(){
-        console.log("Init");
+        //console.log("Init");
         this.$router.push('/main/list').catch(()=>{});
     },
     data(){
@@ -34,6 +35,11 @@ export default {
             menuindex: -1
         }
     },
+    // props:{
+    //     projectname:{
+    //         default:''
+    //     }
+    // },
     methods:{
         clickMenu(input){
             this.menuindex = input;
@@ -47,9 +53,15 @@ export default {
 
 
 
-<style scoped>
+<style>
 /* div#flexmain{
     display:flex;
     flex-direction: row;
 } */
+body{
+    height: 100%;
+}
+div#flexmain{
+    height: 100%;
+}
 </style>

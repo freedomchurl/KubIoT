@@ -12,7 +12,7 @@ import MenuList from '../components/mainpage/MainList.vue'
 import MenuManager from '../components/mainpage/MainManager.vue'
 import MenuAnalytic from '../components/mainpage/MainAnalytic.vue'
 import MenuGroup from '../components/mainpage/MainGroup.vue'
-
+import indexPage from '../App.vue'
 
 Vue.use(VueRouter)
 
@@ -26,14 +26,19 @@ const route = [
     //   path:'/b',
     //   //com`1ponent:InitialFormVue
     // },
-    
+    {
+      path:'/',
+      component:indexPage
+    },
     {
       path:'/loginProject',
-      component:LoginPage
+      component:LoginPage,
+      name:'login'
     },
     {
       path:'/main',
       component:MainPage,
+      name:'main',
       children:[
         {
           path:'list',
@@ -55,7 +60,8 @@ const route = [
     },
     {
       path:'/initProject',
-      component:InitialPage
+      component:InitialPage,
+      name:'init'
     }
 ];
 

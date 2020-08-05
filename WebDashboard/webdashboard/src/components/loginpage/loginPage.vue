@@ -1,5 +1,9 @@
 <template>
     <div>
+        <!-- {{this.$route.params}} -->
+        <!-- <LoginHeader v-bind:projectname=projectname></LoginHeader>
+        <LoginForm></LoginForm> -->
+        
         <LoginHeader></LoginHeader>
         <LoginForm></LoginForm>
     </div>
@@ -13,7 +17,20 @@ export default {
     components:{
         'LoginHeader':LoginHeader,
         'LoginForm':LoginForm
-    }
+    },
+    data(){
+        return{
+            //projectName:''
+        }
+    },
+    // props:{
+    //     projectname:{
+    //         default:''
+    //     }
+    // },
+    // mounted(){
+    //     //console.log(this.$route.params);
+    // }
 }
 </script>
 

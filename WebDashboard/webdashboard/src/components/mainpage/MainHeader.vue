@@ -15,10 +15,11 @@
 
 
 <script>
+import axios from 'axios'
 export default {
     data(){
         return{
-            ProjectName:'[지민이네 집]', // 추후에, DB서버로부터 가져와야한다.,
+            ProjectName:'', // 추후에, DB서버로부터 가져와야한다.,
             searchKey:'',
             searchdescription:'디바이스 정보, 그룹 ID 등 검색',
             searching:'searchinput form-control',
@@ -36,6 +37,16 @@ export default {
         searchAll(){
             console.log('Search Button Clicked');
         }        
+    },
+    created(){
+        var vm = this;
+        $router.to
+        console.log('Header Created');
+        axios.get('http://49.50.174.246:7676/project/projectinfo/get').then(res => { console.log(res.data)
+
+            vm.ProjectName = res.data.payload.projectname;
+       
+        })
     },
     computed:{
         searchProcess(){

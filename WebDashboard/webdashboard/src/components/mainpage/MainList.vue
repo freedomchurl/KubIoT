@@ -13,6 +13,9 @@
       <th scope="col">장치 ID</th>
       <th scope="col">메모</th>
       <th scope="col">위치</th>
+      <th scopr="col">프로토콜</th>
+      <th scope="col">전송 타입</th>
+      <th scope="col">등록 시간</th>
       <th scope="col">관리</th>
     </tr>
   </thead>
@@ -35,11 +38,14 @@
       <td colspan="2">Larry the Bird</td>
       <td>@twitter</td>
     </tr> -->
-    <tr v-for="(data,index) in testDataset" v-bind:key="data">
-        <td>{{data.deviceid}}</td>
+    <tr v-for="(data,index) in dataset" v-bind:key="index">
+        <td>{{data.name}}</td>
         <td>{{data.memo}}</td>
         <td>{{data.location}}</td>
-        <td><button v-on:click="selectDevice(index)">관리</button></td>
+        <td>{{data.protocol}}</td>
+        <td>{{data.type}}</td>
+        <td>{{data.time}}</td>
+        <td><button v-on:click="selectDevice(index)" class="btn btn-primary">관리</button></td>
     </tr>
   </tbody>
 </table>
@@ -49,6 +55,7 @@
 
 <script>
 import {EventBus} from '../../utils/event-bus.js'
+import axios from 'axios'
 //import router from '../../router/index.js'
 //const routespath = ['/list','/analytic','/group','/admin'];
 
@@ -57,7 +64,8 @@ export default {
     data(){
         return{
             testDataset:[{deviceid:'지민아',memo:'철오빠가 사랑해',location:''},{deviceid:'지민아',memo:'많이많이 사랑해',location:''}
-            ,{deviceid:'지민아',memo:'진짜진짜 사랑해',location:''},{deviceid:'지민아',memo:'오래오래 사랑해',location:''}]
+            ,{deviceid:'지민아',memo:'진짜진짜 사랑해',location:''},{deviceid:'지민아',memo:'오래오래 사랑해',location:''}],
+            dataset:[]
         }
     },
     methods:{
@@ -75,10 +83,25 @@ export default {
     mounted(){
         console.log('Mounted');
     },
-    crearted(){
+    created(){
         EventBus.$on("update-list",function(){
             console.log('aaaprint');
+            axios.get('http://49.50.174.246:7676/device/info', { params: { pageinfo: 1 }, 
+        timeout: 1000 // 1초 이내에 응답이 없으면 에러 처리 
+        }).then(res => { console.log(res.data) 
+        
+            this.dataset = res.data.payload;
         })
+        })
+
+        axios.get('http://49.50.174.246:7676/device/info', { params: { pageinfo: 1 }, 
+        timeout: 1000 // 1초 이내에 응답이 없으면 에러 처리 
+        }).then(res => { console.log(res.data) 
+        
+            this.dataset = res.data.payload;
+        })
+
+
     },
     // created(){
     //     console.log('Test here');

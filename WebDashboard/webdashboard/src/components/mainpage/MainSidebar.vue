@@ -47,6 +47,8 @@ export default {
             //console.log('111123131');
             //EventBus2.$emit("content-name-show",this.menulist[input]);
             EventBus.$emit("click-sidemenu",input,this.menulist[input]); // index를 넘겨준다.
+            if(input == 0)
+                EventBus.$emit("update-list");
             
         },
         changebgcolor(input){
@@ -63,14 +65,16 @@ export default {
 <style scoped>
     div{
         color:black;
+        /* display: inline-block; */
         background-color: #ebeced;
         float:left;
+        /* display:flex; */
         width:13rem;
         height: 100vh;
         text-align: left;
         /* 아래 두 줄은, 가로 스크롤바를 넣기 위한 방안 */
         white-space:nowrap;
-        overflow-x:scroll; 
+        overflow-x:scroll;
         box-shadow: 5px 5px 5px 5px #e2e2e2;
     }
     ul{

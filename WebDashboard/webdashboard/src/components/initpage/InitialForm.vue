@@ -17,6 +17,8 @@
 </template>
 
 <script>
+import axios from 'axios'
+
 export default{
     data(){
         return{
@@ -29,12 +31,28 @@ export default{
         }
     },
     methods:{
+        
         addProject(){
+            var vm = this;
             console.log(this.newProjectName + ' ' + this.newProjectID + ' ' + this.newProjectPass + ' ' + this.newProjectPassAgain);
             // 이 부분에, 암호화를 거쳐서, MySQL에다가 저장해야한다.
-
+            console.log(vm.newProjectName);
+            axios.post('http://49.50.174.246:7676/project/projectinfo/create', {projectname: vm.newProjectName
+            }).then(res => { console.log(res.data)
+            //this.dataset = res.data.payload;
+                if(res.data.status == true)
+                {
+                    axios.post('http://49.50.174.246:7676/project/admin/signup',{adminid: vm.newProjectID, adminpwd:vm.newProjectPass})
+                    .then(res=>{
+                        if(res.data.status == true)
+                        {
+                            this.$router.push(this.$route.query.redirect || '/main'); //-> Redirect 하는 부분
+                        }
+                    })
+                }
+            })
             // Redirect 테스트
-            this.$router.push(this.$route.query.redirect || '/main'); //-> Redirect 하는 부분
+            //this.$router.push(this.$route.query.redirect || '/main'); //-> Redirect 하는 부분
         }
     }
 }

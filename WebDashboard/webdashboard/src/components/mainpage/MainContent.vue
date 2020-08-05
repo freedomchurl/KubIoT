@@ -1,7 +1,7 @@
 <template>
     <div>
         <!-- <router-view :key="$route.fullPath"></router-view> -->
-        <router-view id="contentframe"></router-view>
+        <router-view id="contentframe" :key="$route.fullPath"></router-view>
     </div>
 </template>
 

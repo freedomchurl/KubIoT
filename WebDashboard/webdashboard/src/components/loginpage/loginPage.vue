@@ -23,6 +23,9 @@ export default {
             //projectName:''
         }
     },
+    created(){
+        console.log('Login Page Created');
+    }
     // props:{
     //     projectname:{
     //         default:''

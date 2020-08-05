@@ -26,8 +26,8 @@ export default {
         'MainSide':MainSideVue,
         'MainContent':MainContentVue
     },
-    beforeMount(){
-        //console.log("Init");
+    created(){
+        console.log("Call List");
         this.$router.push('/main/list').catch(()=>{});
     },
     data(){

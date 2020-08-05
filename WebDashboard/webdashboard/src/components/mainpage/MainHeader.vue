@@ -40,7 +40,6 @@ export default {
     },
     created(){
         var vm = this;
-        $router.to
         console.log('Header Created');
         axios.get('http://49.50.174.246:7676/project/projectinfo/get').then(res => { console.log(res.data)
 

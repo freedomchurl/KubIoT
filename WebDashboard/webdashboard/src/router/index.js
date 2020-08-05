@@ -12,7 +12,7 @@ import MenuList from '../components/mainpage/MainList.vue'
 import MenuManager from '../components/mainpage/MainManager.vue'
 import MenuAnalytic from '../components/mainpage/MainAnalytic.vue'
 import MenuGroup from '../components/mainpage/MainGroup.vue'
-import indexPage from '../App.vue'
+//import indexPage from '../App.vue'
 
 Vue.use(VueRouter)
 
@@ -27,8 +27,8 @@ const route = [
     //   //com`1ponent:InitialFormVue
     // },
     {
-      path:'/',
-      component:indexPage
+      path:'',
+      component:this
     },
     {
       path:'/loginProject',
@@ -67,6 +67,7 @@ const route = [
 
 
 const router = new VueRouter({
+  mode: 'history',
     routes:route
 })
 

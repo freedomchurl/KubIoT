@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var mysql = require('mysql');
-
+var cors = require('cors');
 
 var pool = mysql.createPool({
 connectionLimit : 20,
@@ -30,12 +30,15 @@ router.get('/',function(req,res){
 				var startindex = (key-1)*20;
 					var exec = conn.query('select * from device order by time desc limit ?,20',startindex,function(err,result){
 						conn.release();
+						
+						res.header("Access-Control-Allow-Headers","Authorization");
+						res.header("Access-Control-Expose-Headers","*");
 						if(err){
 						res.send({status:false,payload:null});
 						}
 						else{	
 						if(result.length){
-						res.send({status:true,payload:result[0]});
+						res.send({status:true,payload:result});
 						}
 						else
 						{

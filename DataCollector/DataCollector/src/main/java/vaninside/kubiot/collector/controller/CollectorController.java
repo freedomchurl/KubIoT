@@ -141,7 +141,7 @@ public class CollectorController {
 		HashMap<String, Object> hashMap = new HashMap<String, Object>();
         hashMap.put("status", result?1:0);
         if(regi.equals("0")) {
-        	 hashMap.put("regi", result?"1":"0");
+        	 hashMap.put("regi", result?"2":"0");
         } else {
         	 hashMap.put("regi", "1");
         }
@@ -163,7 +163,7 @@ public class CollectorController {
 		HashMap<String, Object> hashMap = new HashMap<String, Object>();
         hashMap.put("status", result?1:0);
         if(regi.equals("0")) {
-       	 hashMap.put("regi", result?"1":"0");
+       	 hashMap.put("regi", result?"2":"0");
        } else {
        	 hashMap.put("regi", "1");
        }
@@ -201,7 +201,7 @@ public class CollectorController {
 		HashMap<String, Object> hashMap = new HashMap<String, Object>();
         hashMap.put("status", result?1:0);
         if(regi.equals("0")) {
-       	 hashMap.put("regi", result?"1":"0");
+       	 hashMap.put("regi", result?"2":"0");
        } else {
        	 hashMap.put("regi", "1");
        }
@@ -212,13 +212,6 @@ public class CollectorController {
 	protected void finalize() throws Throwable {
 		super.finalize();
 		instance.disconnect();
-	}
-
-
-	@RequestMapping(value="/test", method=RequestMethod.GET)
-	public ModelAndView test() {
-		System.out.println("hello");
-		return new ModelAndView("redirect:http://127.0.0.1:8090/test");
 	}
 }
 

@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import vaninside.kubiot.controller.service.ControlService;
 
@@ -36,12 +37,12 @@ public class ControlController {
 	
 	@RequestMapping(value="/group-control", method=RequestMethod.POST)
 	public HashMap<String, Object> groupControl(@RequestBody HashMap<String, Object> map) throws IOException {
-		String deviceId = (String) map.get("deviceId");
+
 		String protocol = (String) map.get("protocol");
 		String request = (String) map.get("request");
-		String group = (String)map.get("group");
+		String groupId = (String)map.get("groupId");
 		
-		boolean result = service.Request(deviceId, protocol, request);
+		boolean result = service.Request(groupId, protocol, request);
 		
 		// return json
 		HashMap<String, Object> hashMap = new HashMap<String, Object>();
@@ -51,16 +52,9 @@ public class ControlController {
 	}
 	
 	// 수집 서비스에서 등록할 시에 요청.
-	@RequestMapping(value="/connect", method=RequestMethod.POST)
-	public HashMap<String, Object> register(@RequestBody HashMap<String, Object> map) {
-		
-		boolean result = true;
-		
-		// return json
-		HashMap<String, Object> hashMap = new HashMap<String, Object>();
-        hashMap.put("status", result?1:0);
-        
-		return hashMap;
+	@RequestMapping(value="/connect", method=RequestMethod.GET)
+	public SseEmitter register(@RequestBody HashMap<String, Object> map) {
+		return service.sseConnect();
 	}
 	
 }

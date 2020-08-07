@@ -24,23 +24,27 @@ import com.amazonaws.services.s3.model.PutObjectRequest;
 @Repository
 public class CollectorDao implements ICollectorDao{
 
-	
+	// MySQL Info
 	private String driver = "com.mysql.cj.jdbc.Driver";
-	private String url = "jdbc:mysql://localhost:3306/kubiot?serverTimezone=UTC&characterEncoding=UTF-8";
-	private String userid = "root";
-	private String userpw = "jimin5238";
+	//private String url = "jdbc:mysql://localhost:3306/kubiot?serverTimezone=UTC&characterEncoding=UTF-8";
+	private String url = "jdbc:mysql://49.50.174.246:3306/kubiot?serverTimezone=UTC&characterEncoding=UTF-8";
+	
+	private String userid = "vaninside";
+	private String userpw = "dlcjf2779!";
 	
 	private Connection conn = null;
 	private PreparedStatement pstmt = null;
 	private ResultSet rs =null;
+	
+	// Object Storage Info
 	public static String bucketName = "openinfra";
 	final AmazonS3 s3;
+	final String endPoint = "https://kr.object.ncloudstorage.com";
+	final String regionName = "kr-standard";
+	final String accessKey = "ltDXrFCuHyha8pmwqTcX";
+	final String secretKey = "XFDdqJEASit4wHVFjCEEX6Yi2oD17ekIzCec2z41";
 	
 	public CollectorDao() {
-		final String endPoint = "https://kr.object.ncloudstorage.com";
-		final String regionName = "kr-standard";
-		final String accessKey = "ltDXrFCuHyha8pmwqTcX";
-		final String secretKey = "XFDdqJEASit4wHVFjCEEX6Yi2oD17ekIzCec2z41";
 		// S3 client
 		s3 = AmazonS3ClientBuilder.standard()
 			.withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration(endPoint, regionName))
@@ -48,13 +52,12 @@ public class CollectorDao implements ICollectorDao{
 		    .build();
 		
 		try {
+			// JDBC
 			Class.forName(driver);
 			conn = DriverManager.getConnection(url, userid, userpw);
 		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
@@ -67,7 +70,7 @@ public class CollectorDao implements ICollectorDao{
 		ObjectMetadata objectMetadata = new ObjectMetadata();
 		objectMetadata.setContentLength(0L);
 		objectMetadata.setContentType("application/x-directory");
-		PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, folderName, new ByteArrayInputStream(new byte[0]), objectMetadata);
+		PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName+"/Data", folderName, new ByteArrayInputStream(new byte[0]), objectMetadata);
 			
 		try {
 		    s3.putObject(putObjectRequest);
@@ -83,35 +86,31 @@ public class CollectorDao implements ICollectorDao{
 	}
 
 	@Override
-	public boolean register(String deviceId, String dataType) {
-		String sql = "INSERT INTO device (name, type) VALUES(?,?)";
+	public boolean register(String deviceId, String dataType, String protocol) {
+		String sql = "INSERT INTO device (name, type, protocol) VALUES(?,?,?)";
 		try {
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setString(1, deviceId);
 			pstmt.setString(2, dataType);
+			pstmt.setString(3, protocol);
 			pstmt.executeUpdate();
 			
 			pstmt.close();
 			return true;
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return false;
 		}
-		
-		//
-		//conn.close();
 	}
 
 	@Override
 	public boolean insertData(String folderName, File file) {
 		String objectName = file.getName();
 		//String objectName = "sample-object";
-		//String filePath = "C:\\Users\\JIMIN\\Desktop\\sample.txt";
 
 		try {
 		    //s3.putObject(bucketName+"/sample-folder", objectName, file);
-			s3.putObject(bucketName+folderName, objectName, file);
+			s3.putObject(bucketName+"/Data"+folderName, objectName, file);
 			System.out.format("Object %s has been created.\n", objectName);
 		} catch (AmazonS3Exception e) {
 		    e.printStackTrace();
@@ -120,7 +119,6 @@ public class CollectorDao implements ICollectorDao{
 		    e.printStackTrace();
 		    return false;
 		}
-		
 		return true;
 	}
 

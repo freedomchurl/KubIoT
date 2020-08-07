@@ -12,10 +12,10 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
+//@EnableDiscoveryClient
 @EnableScheduling
 @SpringBootApplication
 public class DataCollectorApplication {
-
 	public static void main(String[] args) {
 		SpringApplication.run(DataCollectorApplication.class, args);
 	}

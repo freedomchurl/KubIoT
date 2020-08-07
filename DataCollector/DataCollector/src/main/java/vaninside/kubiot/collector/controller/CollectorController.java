@@ -9,6 +9,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -16,17 +18,15 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 
 import javax.annotation.Resource;
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
-import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.fs.FSDataOutputStream;
-import org.apache.hadoop.fs.FileSystem;
-import org.apache.hadoop.fs.Path;
 import org.eclipse.paho.client.mqttv3.IMqttClient;
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallback;
@@ -40,10 +40,14 @@ import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.integration.annotation.IntegrationComponentScan;
 import org.springframework.integration.annotation.MessagingGateway;
 import org.springframework.integration.annotation.ServiceActivator;
@@ -59,6 +63,9 @@ import org.springframework.messaging.MessageHandler;
 import org.springframework.messaging.MessagingException;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.ui.Model;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -68,16 +75,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.ModelAndView;
 
-
-import vaninside.kubiot.collector.controller.config.Mqtt;
-import vaninside.kubiot.collector.model.MqttSubscribeModel;
 import vaninside.kubiot.collector.service.CollectorService;
 
 @RestController
 @SpringBootApplication
-@IntegrationComponentScan
 public class CollectorController {
 	public static String topic = "topic";
 	private static final String MQTT_PUBLISHER_ID = "collector-server";
@@ -91,8 +96,8 @@ public class CollectorController {
 		init();
 	}
 	
-	public void init() throws MqttException {
-		// Mqtt Init
+	public void init() throws MqttException{
+		// Mqtt Initialize
         if (instance == null) {
             instance = new MqttClient(MQTT_SERVER_ADDRES, MQTT_PUBLISHER_ID);                
         }
@@ -110,7 +115,6 @@ public class CollectorController {
 
 				@Override
 				public void messageArrived(String topic, MqttMessage message) throws Exception {
-					System.out.println("Message Arrived");
 					MQTT_DataReceive(message);
 				}
 
@@ -121,10 +125,7 @@ public class CollectorController {
         // Subscribe to topic
         instance.subscribe(topic);
 	}
-
-	
-	
-	
+			
 	@RequestMapping(value="/sendFData", method=RequestMethod.POST)
 	public HashMap<String, Object> HTTP_FDataReceive(@RequestBody HashMap<String, Object> map) throws IOException, ClassNotFoundException, SQLException {
 		
@@ -134,9 +135,7 @@ public class CollectorController {
 		ArrayList<String> time = (ArrayList<String>) map.get("time");
 		String regi = (String) map.get("regi");
 		
-		System.out.println(data.get(0));
-		
-		boolean result = service.saveData(deviceId, dataType, data, time, regi); 
+		boolean result = service.saveData(deviceId, dataType, data, time, regi, "HTTP"); 
 		
 		// return json
 		HashMap<String, Object> hashMap = new HashMap<String, Object>();
@@ -157,14 +156,8 @@ public class CollectorController {
 		
 		boolean result = false;
 		for (MultipartFile file : files) {
-			result = service.saveData(deviceId, type, file, time, regi); 
-			/*
-			String originalfileName = file.getOriginalFilename();
-			File dest = new File("C:/Image/" + originalfileName);
-			file.transferTo(dest);
-		*/
+			result = service.saveData(deviceId, type, file, time, regi, "HTTP"); 
 		}
-		
 		
 		// return json
 		HashMap<String, Object> hashMap = new HashMap<String, Object>();
@@ -177,42 +170,31 @@ public class CollectorController {
 		return hashMap;
 	}
 	
-	
 	public HashMap<String, Object> MQTT_DataReceive(MqttMessage msg) throws ParseException {
-		System.out.println(1);
 		JSONParser parser = new JSONParser();
 		JSONObject obj = new JSONObject();
 		
-		System.out.println(2);
-		System.out.println(msg);
-		
 		String[] str = msg.toString().split("!@", 2);
+		// str[0] : json info, str[1] : Image data 
 		
-		// str[0] : json info, str[1] : data 
-		System.out.println(3);
-
-		System.out.println(str.length);
 		obj = (JSONObject) parser.parse(str[0]);
-		System.out.println(3);
 		String deviceId = (String) obj.get("deviceId");
 		String dataType = (String) obj.get("type");
-		//String data = (String) obj.get("data");
 		String regi = (String) obj.get("regi");
 		
 		boolean result;
 		if(str.length == 1) {
 			// float data
-			System.out.println("insside iffff");
 			ArrayList<Double> data = (ArrayList<Double>) obj.get("data");
 			ArrayList<String> time =  (ArrayList<String>) obj.get("time");
-			result = service.saveData(deviceId, dataType, data, time, regi);
+			result = service.saveData(deviceId, dataType, data, time, regi, "MQTT");
 		} 
 		
 		else { 
 			// image data
 			String data = str[1];
 			String time = (String) obj.get("time");
-			result = service.saveData(deviceId, dataType, data, time, regi);
+			result = service.saveData(deviceId, dataType, data, time, regi, "MQTT");
 		}
 		
 		// return json
@@ -224,64 +206,19 @@ public class CollectorController {
        	 hashMap.put("regi", "1");
        }
 		return hashMap;
-		
-	}
-	
-	public void MQTT_FDataReceive(String msg) throws ParseException {
-		System.out.println("original : " + msg);
-		
-		
-		JSONParser parser = new JSONParser();
-		JSONObject obj = new JSONObject();
-		obj = (JSONObject) parser.parse(msg);
-		
-		String deviceId = (String) obj.get("deviceId");
-		String dataType = (String) obj.get("type");
-		String data = (String) obj.get("data");
-		String group = (String) obj.get("group");
-		String time = (String) obj.get("time");
-		
-		// System.out.println(obj.get("id"));
-		service.saveData(deviceId, dataType, data, group, time); 
-	}
-	
-	public void MQTT_BDataReceive(String msg) throws ParseException, IOException {
-		JSONParser parser = new JSONParser();
-		JSONObject obj = new JSONObject();
-		
-		String[] str = msg.split("!@", 2);
-		// str[0] : json info, str[1] : data 
-		
-		System.out.println(str.length);
-		obj = (JSONObject) parser.parse(str[0]);
-		
-		System.out.println("here");
-		String deviceId = (String) obj.get("deviceId");
-		//String dataType = (String) obj.get("type");
-		//String data = (String) obj.get("data");
-		// String data = str[1];
-		//String group = (String) obj.get("group");
-		//String time = (String) obj.get("time");
-		//String filename = (String) obj.get("filename");
-		
-		System.out.println("here2");
-		//System.out.println(filename);
-		//System.out.println(data);
-		/*
-		 File lOutFile = new File("C:/Image/fin_image.png");
-         FileOutputStream lFileOutputStream = new FileOutputStream(lOutFile);
-         byte[] re = binaryStringToByteArray(data);
-         lFileOutputStream.write(re);
-         lFileOutputStream.close();
-         */
 	}
 	
 	@Override
 	protected void finalize() throws Throwable {
 		super.finalize();
-		Mqtt.getInstance().disconnect();
+		instance.disconnect();
 	}
 
-	
+
+	@RequestMapping(value="/test", method=RequestMethod.GET)
+	public ModelAndView test() {
+		System.out.println("hello");
+		return new ModelAndView("redirect:http://127.0.0.1:8090/test");
+	}
 }
 

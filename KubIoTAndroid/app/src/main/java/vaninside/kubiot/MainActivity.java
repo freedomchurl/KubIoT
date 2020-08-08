@@ -46,34 +46,18 @@ public class MainActivity extends AppCompatActivity {
                                         @Override
                                        public void onClick(View v) {
                                            try {
-                                               /*
-                                               // Open the connection
-                                               URL url = new URL("http://localhost:8080/test");
-                                               HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                                               conn.setRequestMethod("GET");
-                                               InputStream is = conn.getInputStream();
+                                               HttpUtil util = new HttpUtil("http://49.50.174.246:7878/push/message/getpushlist");
+                                               String str = util.execute().get();
+                                               //Log.d("notice", str);
 
-                                               // Get the stream
-                                               StringBuilder builder = new StringBuilder();
-                                               BufferedReader reader = new BufferedReader(new InputStreamReader(is, "UTF-8"));
-                                               String line;
-                                               while ((line = reader.readLine()) != null) {
-                                                   builder.append(line);
-                                               }
-
-                                               // Set the result
-                                               result = builder.toString();
-*/
-                                               String str = "{\"value\":[\"DEVICE 01 ERROR\", \"DEVICE 03 ERROR\", \"DEVICE 05 ERROR\"]}";
                                                JSONObject obj = new JSONObject(str);
-                                               JSONArray rs = (JSONArray)obj.get("value");
+                                               JSONArray rs = (JSONArray)obj.get("payload");
 
                                                pushArray.clear();
                                                for(int i=0; i<rs.length(); i++){
                                                    pushArray.add(rs.get(i).toString());
                                                }
                                                mListAdapter.notifyDataSetChanged();
-
                                            }
                                            catch (Exception e) {
                                                // Error calling the rest api
@@ -91,7 +75,10 @@ public class MainActivity extends AppCompatActivity {
                                     Log.w("FCM Log", "getInstanceId failed", task.getException());
                                     return;
                                 }
+
                                 String token = task.getResult().getToken();
+
+                                new HttpUtil("http://49.50.174.246:7878/push/tokenadd?token="+token).execute();
                                 Log.d("FCM LOG", "FCM 토큰" + token);
                                 //Toast.makeText(MainActivity.this, token, Toast.LENGTH_SHORT).show();
                             }
@@ -99,12 +86,9 @@ public class MainActivity extends AppCompatActivity {
 
         mListView = (ListView) findViewById(R.id.listview);
 
-        // 데이터 생성
         pushArray = new ArrayList<>();
-        pushArray.add("test01");
-        pushArray.add("test02");
 
-        // 어댑터 연결
+        // Connect to Adpater
         mListAdapter = new ListAdapter(getApplicationContext(), pushArray);
         mListView.setAdapter(mListAdapter);
     }

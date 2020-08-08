@@ -25,10 +25,9 @@ public class MyFireBaseMessagingService extends FirebaseMessagingService{
 
     @Override
     public void onMessageReceived(@NonNull RemoteMessage remoteMessage) {
-        if(remoteMessage.getNotification() != null){
-            Log.d("FCM Log", "알림 메시지 : "+remoteMessage.getNotification().getBody());
-            String messageBody = remoteMessage.getNotification().getBody();
-            String messageTitle = remoteMessage.getNotification().getTitle();
+        if (!remoteMessage.getData().isEmpty()) {
+            Log.d("FCM Log", "알림 메시지 : " + remoteMessage.getData().get("message"));
+            String messageBody = remoteMessage.getData().get("message");
             Intent intent = new Intent(this, MainActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT);
@@ -36,14 +35,14 @@ public class MyFireBaseMessagingService extends FirebaseMessagingService{
             Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
             NotificationCompat.Builder notificationBuilder =
                     new NotificationCompat.Builder(this, channelId)
-                    .setSmallIcon(R.mipmap.ic_launcher)
-                    .setContentTitle(messageTitle)
-                    .setContentText(messageBody)
-                    .setAutoCancel(true)
-                    .setSound(defaultSoundUri)
-                    .setContentIntent(pendingIntent);
+                            .setSmallIcon(R.mipmap.ic_launcher)
+                            .setContentTitle("NOTICE")
+                            .setContentText(messageBody)
+                            .setAutoCancel(true)
+                            .setSound(defaultSoundUri)
+                            .setContentIntent(pendingIntent);
             NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 String channelName = "channel Name";
                 NotificationChannel channel = new NotificationChannel(channelId, channelName, notificationManager.IMPORTANCE_HIGH);
                 notificationManager.createNotificationChannel(channel);

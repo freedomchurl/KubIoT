@@ -9,7 +9,7 @@ port = 7878;
 app.use(cors());
 //var DeviceRoutes = require('./routes/device/device_router.js');
 //var ProjectRoutes = require('./routes/project/project_router.js');
-var PushRoutes = reuiqre('./routes/push/push_router.js');
+var PushRoutes = require('./routes/push/push_router.js');
 
 
 app.use(express.json());

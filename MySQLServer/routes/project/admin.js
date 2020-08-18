@@ -50,7 +50,7 @@ router.post('/signup',function(req,res){
 router.post('/signin',function(req,res){
 	var id = req.body.adminid;
 	var pwd = req.body.adminpwd;
-
+	console.log(req);
 	pool.getConnection(function(err,conn){
 		if(err){
 			if(conn){

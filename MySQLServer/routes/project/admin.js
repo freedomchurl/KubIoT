@@ -85,5 +85,43 @@ router.post('/signin',function(req,res){
 	});
 });
 
+router.post('/pwdchange',function(req,res){
+	var id = req.body.adminid;
+	var pwd = req.body.adminpwd;
+
+	pool.getConnection(function(err,conn){
+		if(err){
+			if(conn){
+				conn.release();
+			}
+			throw err;
+		}
+		//data = {id:id,pass:pwd};
+		data = "id=" + id + " and " + "pass=" + pwd;
+		data = [pwd,id];
+		var exec = conn.query('update admin set pass=? where id=?',data,function(err,result){
+			conn.release();
+			res.header("Access-Control-Allow-Headers","Authorization");
+			res.header("Access-Control-Expose-Headers","*");
+			if(err){
+				res.send({status:false});
+			}
+			else{
+				console.log(result.length);
+				console.log(result);	
+				if(result.length == 1){
+					res.send({status:true});
+				}
+				else{
+					res.send({status:false});
+				}
+			}
+		});
+
+		
+
+	});
+});
+
 
 module.exports = router;

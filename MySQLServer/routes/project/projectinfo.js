@@ -62,6 +62,7 @@ router.get('/get',function(req,res){
 		//data = {id:id,pass:pwd};
 	//	data = "id=" + id + " and " + "pass=" + pwd;
 	//	data = [id, pwd];
+		// MySQL에서, 서버에 projectinfo가 있을 시, true를 return한다. 
 		var exec = conn.query('select * from projectinfo',function(err,result){
 			conn.release();
 			res.header("Access-Control-Allow-Headers","Authorization");

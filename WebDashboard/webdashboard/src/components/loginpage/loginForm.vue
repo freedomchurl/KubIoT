@@ -15,6 +15,8 @@
 <script>
 import axios from 'axios'
 import {EventBus} from '../../utils/event-bus.js'
+import IP from '../../../static/IP.json'
+
 export default{
     data(){
         return{
@@ -36,7 +38,7 @@ export default{
             // 이 부분에, 암호화를 거쳐서, MySQL에다가 저장해야한다.
             console.log("Login Project")
             // Redirect 테스트
-            axios.post('http://49.50.174.246:7676/project/admin/signin', {adminid: vm.newProjectID, adminpwd:vm.newProjectPass})
+            axios.post('http://' + IP.IP+ ':7676/project/admin/signin', {adminid: vm.newProjectID, adminpwd:vm.newProjectPass})
                     .then(res=>{
                         if(res.data.status == true)
                         {

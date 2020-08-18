@@ -8,6 +8,7 @@
 <script>
 import {EventBus} from './utils/event-bus.js'
 import axios from 'axios'
+import IP from '../static/IP.json'
 
 export default{
   methods:{
@@ -26,7 +27,7 @@ export default{
             //this.selectContent(index);
         });
 
-    axios.get('http://49.50.174.246:7676/project/projectinfo/get').then(res => { console.log(res.data) 
+    axios.get('http://' + IP.IP+ ':7676/project/projectinfo/get').then(res => { console.log(res.data) 
            // 현재, 프로젝트가 존재하는지 알아본다.
             
             if(res.data.status == true)

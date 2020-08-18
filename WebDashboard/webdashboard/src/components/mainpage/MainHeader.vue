@@ -16,6 +16,7 @@
 
 <script>
 import axios from 'axios'
+import IP from '../../../static/IP.json'
 export default {
     data(){
         return{
@@ -41,7 +42,7 @@ export default {
     created(){
         var vm = this;
         console.log('Header Created');
-        axios.get('http://49.50.174.246:7676/project/projectinfo/get').then(res => { console.log(res.data)
+        axios.get('http://' + IP.IP+ ':7676/project/projectinfo/get').then(res => { console.log(res.data)
 
             vm.ProjectName = res.data.payload.projectname;
        

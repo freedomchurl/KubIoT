@@ -56,6 +56,7 @@
 <script>
 import {EventBus} from '../../utils/event-bus.js'
 import axios from 'axios'
+import IP from '../../../static/IP.json'
 //import router from '../../router/index.js'
 //const routespath = ['/list','/analytic','/group','/admin'];
 
@@ -86,7 +87,7 @@ export default {
     created(){
         EventBus.$on("update-list",function(){
             console.log('aaaprint');
-            axios.get('http://49.50.174.246:7676/device/info', { params: { pageinfo: 1 }, 
+            axios.get('http://' + IP.IP+ ':7676/device/info', { params: { pageinfo: 1 }, 
         timeout: 1000 // 1초 이내에 응답이 없으면 에러 처리 
         }).then(res => { console.log(res.data) 
         
@@ -94,7 +95,7 @@ export default {
         })
         })
 
-        axios.get('http://49.50.174.246:7676/device/info', { params: { pageinfo: 1 }, 
+        axios.get('http://' + IP.IP+ ':7676/device/info', { params: { pageinfo: 1 }, 
         timeout: 1000 // 1초 이내에 응답이 없으면 에러 처리 
         }).then(res => { console.log(res.data) 
         

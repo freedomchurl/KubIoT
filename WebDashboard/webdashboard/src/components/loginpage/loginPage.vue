@@ -2,7 +2,7 @@
     <div id="login-box">
         <div id="left-box">
             <h2 id="title">Welcome to KubIoT!</h2>
-            <p id="metioned">Sign up and Make your own project</p>
+            <p id="metioned">Sign In the project</p>
         </div>
         <div id="main-box">
         <LoginHeader></LoginHeader>

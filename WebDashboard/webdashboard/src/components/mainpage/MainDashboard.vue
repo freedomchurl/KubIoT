@@ -1,12 +1,13 @@
 <template>
     <div>
         <!-- {{this.$router.projectname}} -->
-        <MainHeader></MainHeader>
         <div id="flexcontain">
+            <MainSide v-bind:id="ID" ref="select"></MainSide>
         <div id='flexmain'>
         <!-- <MainSide v-on:menuselect="clickMenu" ref="select"></MainSide>
         <MainContent v-bind:propsmenuindex="menuindex"></MainContent>-->
-        <MainSide ref="select"></MainSide>
+        
+        <!-- <MainHeader></MainHeader> -->
         <MainContent></MainContent>
         </div>
         </div>
@@ -15,7 +16,7 @@
 
 
 <script>
-import MainHeaderVue from './MainHeader.vue'
+// import MainHeaderVue from './MainHeader.vue'
 import MainSideVue from './MainSidebar.vue'
 import MainContentVue from './MainContent.vue'
 
@@ -24,24 +25,22 @@ import MainContentVue from './MainContent.vue'
 
 export default {
     components:{
-        'MainHeader':MainHeaderVue,
+        // 'MainHeader':MainHeaderVue,
         'MainSide':MainSideVue,
         'MainContent':MainContentVue
     },
+    props:['id'],
     created(){
         console.log("Call List");
-        this.$router.push('/main/list').catch(()=>{});
+        // console.log(this.id)
+        this.$router.push({path:'/main/list',params:{id:this.$route.params.id}}).catch(()=>{});
     },
     data(){
         return{
-            menuindex: -1
+            menuindex: -1,
+            ID:this.id,
         }
     },
-    // props:{
-    //     projectname:{
-    //         default:''
-    //     }
-    // },
     methods:{
         clickMenu(input){
             this.menuindex = input;
@@ -60,7 +59,7 @@ export default {
     display:flex;
     flex-direction: row;
 } */
-body{
+html,body{
     height: 100%;
 }
 

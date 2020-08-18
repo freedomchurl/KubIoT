@@ -14,8 +14,27 @@
 <script>
 import InitialHeaderVue from "./InitialHeader.vue";
 import InitialFormVue from "./InitialForm.vue";
+import axios from 'axios'
+import IP from '../../../static/IP.json'
 
 export default {
+  beforeCreate(){
+        var vm = this;
+        axios.get('http://' + IP.IP+ ':7676/project/projectinfo/get').then(res => { console.log(res.data) 
+           // 현재, 프로젝트가 존재하는지 알아본다.
+            
+            if(res.data.status == true)
+            {
+              console.log("Login Success");
+              vm.$router.push({name:'login'});
+            }
+            else{
+              console.log("Sign up Project");
+              this.$router.push({name:'init'}) // project가 있는 경우
+              //this.$router.push(this.$router.query.redirect || '/initProject')
+            }
+        })
+    },
   components: {
     InitHeader: InitialHeaderVue,
     InitForm: InitialFormVue,

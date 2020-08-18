@@ -20,6 +20,7 @@
 import axios from 'axios'
 import IP from '../../../static/IP.json'
 export default{
+    
     data(){
         return{
             newProjectName:'',

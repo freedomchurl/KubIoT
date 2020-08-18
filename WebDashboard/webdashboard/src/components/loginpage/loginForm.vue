@@ -46,7 +46,7 @@ export default{
                             //this.$router.push(this.$route.query.redirect || '/main'); //-> Redirect 하는 부분
                             //this.$router.push('/main');
                             //this.$router.push({name:'main'});
-                            EventBus.$emit('gotomain');
+                            EventBus.$emit('gotomain',vm.newProjectID);
                             // console.log('Params = ' + vm.titleprops)
                             //this.$router.push({name:'main',params:{projectname:vm.titleprops}})
                         }

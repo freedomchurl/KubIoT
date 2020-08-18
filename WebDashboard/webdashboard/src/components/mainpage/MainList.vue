@@ -1,11 +1,20 @@
 <template>
-<div>
-    <div id="menuname">장치 리스트</div>
-    <hr>
-    <span id="flexicon">
-            <img v-on:click="clicklist" id="listbutton" src="../../../static/img/list.png">
-            <img v-on:click="clickcard" id="listcard" src="../../../static/img/cardview.png">
-        </span>
+<div id="top">
+    <div id="menuname"><span id="title">장치 리스트</span></div>
+    <div id="current-state">
+        <div id="total-device">
+            <div id="state-name">총 장치 수</div>
+            <div id="state-value">{{totalDevice}}<span id="amount">대</span></div>
+            </div><div class="vl"></div>
+        <div id="total-group">
+            <div id="state-name">총 그룹 수</div>
+            <div id="state-value">{{totalGroup}}<span id="amount">그룹</span></div>
+            </div><div class="vl"></div>
+        <div id="abnormal-device">
+            <div id="state-name">이상 감지 장치 수</div>
+            <div id="state-value">{{abnormalDevice}}<span id="amount">대</span></div>
+        </div>
+    </div> 
     <div>
     <table class="table table-hover">
   <thead>
@@ -66,7 +75,10 @@ export default {
         return{
             testDataset:[{deviceid:'지민아',memo:'철오빠가 사랑해',location:''},{deviceid:'지민아',memo:'많이많이 사랑해',location:''}
             ,{deviceid:'지민아',memo:'진짜진짜 사랑해',location:''},{deviceid:'지민아',memo:'오래오래 사랑해',location:''}],
-            dataset:[]
+            dataset:[],
+            totalDevice:3,
+            totalGroup:4,
+            abnormalDevice:1,
         }
     },
     methods:{
@@ -103,6 +115,9 @@ export default {
         })
 
 
+        // totalDevice, totalGroup, abnormalDevice 를 가져와야함
+
+
     },
     // created(){
     //     console.log('Test here');
@@ -122,10 +137,47 @@ export default {
 </script>
 
 <style scoped>
+div#state-value{
+    color: rgb(85,107,122);
+    font-size: 3rem;
+    font-weight: bold;
+}
+#state-name{
+    color: rgb(85,107,122);
+    text-align: left;
+    font-weight: bold;
+    margin-left: 1rem;
+    margin-top:1rem;
+}
+.vl {
+  border-left: 1px solid rgb(70, 70, 70);
+  height: 80%;
+}
 div{
     width:inherit;
     white-space:nowrap;
     overflow-x:scroll; 
+    padding: 0 0 0 0;
+}
+#total-device{
+    flex: 1;
+}
+#total-group{
+    flex: 1;
+}
+#abnormal-device{
+flex: 1;
+}
+#current-state{
+    background-color: rgb(190,190,190);
+    height: 120px;
+    display: flex; 
+    flex-direction: row;
+    align-items: center;
+}
+#title{
+    margin-top: 25px;
+    margin-left: 40px;
 }
 #menuname{
         /* float:inline-start; */
@@ -135,7 +187,10 @@ div{
         /* width: inherit;
         height:inherit; */
         text-align: left;
-        padding:0rem 2rem 0rem 1rem;
+        height: 90px;
+        color:rgb(85,107,122);
+        background-color: rgb(224,224,224);
+        padding:0rem 2rem 0rem 1rem; 
     }
 span#flexicon{
         /* height: 3rem;; */
@@ -153,13 +208,13 @@ span#flexicon{
     img{
         margin: 0rem 1rem 1rem 0rem;
     }
-    hr{
-        /* display:flex; */
-        /* align-content: left; */
-        border-top:1px solid grey;
-        width: 30vw;
-        /* background: yellow; */
-        margin:1.0rem 1.5rem 1.5rem 0.5rem;
-        /* padding:0rem 1.5rem 0.5rem 1.5rem; */
-    }
+span#amount{
+    margin-left: 1rem;
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+    color:rgb(85,107,122);
+}
+table{
+    margin: 30px 0px 0px 0px;
+}
 </style>

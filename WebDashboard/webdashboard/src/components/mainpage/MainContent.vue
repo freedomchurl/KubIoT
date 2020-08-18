@@ -10,7 +10,8 @@
 import {EventBus} from '../../utils/event-bus.js'
 //import {EventBus2} from '../../utils/event-bus.js'
 import router from '../../router/index.js'
-const routespath = ['/list','/analytic','/group','/admin'];
+// const routespath = ['/list','/analytic','/group','/admin'];
+const routesname = ['list','analytic','group','admin'];
 
 export default {
     data(){
@@ -24,13 +25,14 @@ export default {
     created(){
         console.log('Test here');
         var vm = this;
-        EventBus.$on("click-sidemenu",function(index,name){
+        EventBus.$on("click-sidemenu",function(index,name,ID){
             console.log("Event!!" + name);
             //this.currentindex = index;
             vm.menuname = name;
+            console.log("ID를 받았다 : " + ID);
             //this.setName(name);
             //router.push('/main' + routespath[index]);
-            router.push('/main' + routespath[index]).catch(()=>{});
+            router.push({name:routesname[index],params:{admin_id:ID}}).catch(()=>{});
             // Redirect 가 안됨.
             //this.selectContent(index);
         });
@@ -90,8 +92,8 @@ export default {
         padding:1rem 2rem 0rem 3rem;
     } */
     
-    #contentframe{
+    /* #contentframe{
         padding: 1.5rem 2rem 2rem 2rem;
-    }
+    } */
     
 </style>

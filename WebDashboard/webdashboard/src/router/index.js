@@ -39,21 +39,27 @@ const route = [
       path:'/main',
       component:MainPage,
       name:'main',
+      props:true,
       children:[
         {
           path:'list',
+          name:'list',
           component:MenuList
         },
         {
           path:'admin',
-          component:MenuManager
+          component:MenuManager,
+          name:'admin',
+          props:true,
         },
         {
           path:'analytic',
+          name:'analytic',
           component:MenuAnalytic
         },
         {
           path:'group',
+          name:'group',
           component:MenuGroup
         }
       ]

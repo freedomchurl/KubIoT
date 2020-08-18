@@ -1,0 +1,11 @@
+{
+    "mysql":{
+        "connectionLimit":20,
+        "host":"101.101.208.147",
+        "user":"root",
+        "password":"dlcjf2779!",
+        "database":"kubiot",
+        "debug":true,
+        "charset":"utf8"
+    }
+}

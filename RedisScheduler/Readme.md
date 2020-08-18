@@ -2,9 +2,9 @@
 
 ## redis 키는 아래와 같다
 
-* {ID}:input
-* {ID}:control
-* {gID}:group:control
+* {ID}:input:time / {ID}:input:data
+* {ID}:control:time / {ID}:control:data
+* {gID}:group:control:data / {gID}:group:control:time
 
 의 3가지가 존재함
 

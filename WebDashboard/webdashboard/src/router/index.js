@@ -27,7 +27,7 @@ const route = [
     //   //com`1ponent:InitialFormVue
     // },
     {
-      path:'',
+      path:'/',
       component:this
     },
     {

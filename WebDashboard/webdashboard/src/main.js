@@ -6,19 +6,7 @@ import router from './router/index.js'
 Vue.config.productionTip = false
 
 Vue.use(VueRouter)
-// new VueRouter({
-//   routes:[
 
-//   ]
-// // });
-// var route = new VueRouter({
-//   routes:,
-//     {
-//       path:'/',
-//       component:App
-//     }//
-//   ]
-// });
 
 new Vue({
   render: h => h(App),

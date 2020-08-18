@@ -2,11 +2,13 @@
     <div>
         <!-- {{this.$router.projectname}} -->
         <MainHeader></MainHeader>
+        <div id="flexcontain">
         <div id='flexmain'>
         <!-- <MainSide v-on:menuselect="clickMenu" ref="select"></MainSide>
         <MainContent v-bind:propsmenuindex="menuindex"></MainContent>-->
         <MainSide ref="select"></MainSide>
         <MainContent></MainContent>
+        </div>
         </div>
     </div>
 </template>
@@ -61,7 +63,5 @@ export default {
 body{
     height: 100%;
 }
-div#flexmain{
-    height: 100%;
-}
+
 </style>

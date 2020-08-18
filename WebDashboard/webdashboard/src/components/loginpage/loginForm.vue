@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div id="main-text">
         <div class="row justify-content-center">
         <div class="col-sm-4 col-sm-offset-3">
         <label class="sr-only" for="adminid">Admin ID</label>
@@ -59,6 +59,9 @@ export default{
 </script>
 
 <style>
+    #main-text{
+        height: 50%;
+    }
     input{
         /* margin:0em 0em 0.5em 0em; */
         display:flex;

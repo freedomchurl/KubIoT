@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div v-bind:style="fullh">
         <ul>
             <li  v-on:mouseover = "changebgcolor(index)" v-on:mouseout = "originalcolor(index)" 
             v-on:click="menuselect(index)" v-for="(menu,index) in menuL" v-bind:key="index" v-bind:style="hoverbg[index]">
@@ -24,6 +24,7 @@ var sidebar_hover = "#a3a3a3";
 export default {
     data(){
         return{
+            //fullh:'heigth:100%',
             menulist:
             ['장치리스트','수집 데이터 분석','장치 그룹관리','관리자 메뉴'],
             menuL:
@@ -70,12 +71,13 @@ export default {
         float:left;
         /* display:flex; */
         width:13rem;
-        height: 100vh;
+        height: 200vh;
         text-align: left;
         /* 아래 두 줄은, 가로 스크롤바를 넣기 위한 방안 */
         white-space:nowrap;
         overflow-x:scroll;
         box-shadow: 5px 5px 5px 5px #e2e2e2;
+    
     }
     ul{
         list-style:none;

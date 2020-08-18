@@ -34,6 +34,7 @@ import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
+import org.eclipse.paho.client.mqttv3.MqttPersistenceException;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -86,7 +87,7 @@ import vaninside.kubiot.collector.service.CollectorService;
 public class CollectorController {
 	public static String topic = "topic";
 	private static final String MQTT_PUBLISHER_ID = "collector-server";
-	private static final String MQTT_SERVER_ADDRES= "tcp://127.0.0.1:1883";
+	private static final String MQTT_SERVER_ADDRES= "tcp://101.101.219.90:1883";
 	private static IMqttClient instance;
    
 	@Autowired
@@ -109,6 +110,7 @@ public class CollectorController {
 
         if (!instance.isConnected()) {
             instance.connect(options);
+            //instance.publish(topic, new MqttMessage("hello".getBytes()));
             instance.setCallback(new MqttCallback() {
 				@Override
 				public void connectionLost(Throwable cause) {}
@@ -139,9 +141,9 @@ public class CollectorController {
 		
 		// return json
 		HashMap<String, Object> hashMap = new HashMap<String, Object>();
-        hashMap.put("status", result?1:0);
+        hashMap.put("status", 0);
         if(regi.equals("0")) {
-        	 hashMap.put("regi", result?"2":"0");
+        	 hashMap.put("regi", result?"1":"0");
         } else {
         	 hashMap.put("regi", "1");
         }
@@ -150,20 +152,39 @@ public class CollectorController {
 	
 	@RequestMapping(value="/sendBData", method=RequestMethod.POST)
 	@ResponseStatus(HttpStatus.CREATED)
-	public HashMap<String, Object> HTTP_BDataReceive(
-			@RequestParam("deviceId") String deviceId, @RequestParam("type") String type, @RequestParam("regi") String regi, @RequestParam("time") String time, 
-			@RequestParam("data") List<MultipartFile> files) throws Exception {
+	public HashMap<String, Object> HTTP_BDataReceive(@RequestBody String msg) throws Exception {
 		
+		/*
 		boolean result = false;
 		for (MultipartFile file : files) {
 			result = service.saveData(deviceId, type, file, time, regi, "HTTP"); 
 		}
+		*/
+		boolean result = false;
+		
+		JSONParser parser = new JSONParser();
+		JSONObject obj = new JSONObject();
+		
+		String[] str = msg.split("!@", 2);
+		// str[0] : json info, str[1] : Image data 
+		
+		obj = (JSONObject) parser.parse(str[0]); 
+		String deviceId = (String) obj.get("deviceId");
+		String dataType = (String) obj.get("type");
+		String regi = (String) obj.get("regi");
+		System.out.println(str.length + "##");
+		
+			// image data
+			String data = str[1];
+			String time = (String) obj.get("time");
+			result = service.saveData(deviceId, dataType, data, time, regi, "MQTT");
+		
 		
 		// return json
 		HashMap<String, Object> hashMap = new HashMap<String, Object>();
-        hashMap.put("status", result?1:0);
+        hashMap.put("status", 0);
         if(regi.equals("0")) {
-       	 hashMap.put("regi", result?"2":"0");
+       	 hashMap.put("regi", result?"1":"0");
        } else {
        	 hashMap.put("regi", "1");
        }
@@ -171,16 +192,22 @@ public class CollectorController {
 	}
 	
 	public HashMap<String, Object> MQTT_DataReceive(MqttMessage msg) throws ParseException {
+		System.out.println(msg.toString());
+		
 		JSONParser parser = new JSONParser();
 		JSONObject obj = new JSONObject();
 		
 		String[] str = msg.toString().split("!@", 2);
 		// str[0] : json info, str[1] : Image data 
 		
-		obj = (JSONObject) parser.parse(str[0]);
+		System.out.println(0);
+
+		System.out.println(str[0]);
+		obj = (JSONObject) parser.parse(str[0]); 
 		String deviceId = (String) obj.get("deviceId");
 		String dataType = (String) obj.get("type");
 		String regi = (String) obj.get("regi");
+		System.out.println(str.length + "##");
 		
 		boolean result;
 		if(str.length == 1) {
@@ -191,6 +218,7 @@ public class CollectorController {
 		} 
 		
 		else { 
+			System.out.println(1);
 			// image data
 			String data = str[1];
 			String time = (String) obj.get("time");
@@ -200,12 +228,29 @@ public class CollectorController {
 		// return json
 		HashMap<String, Object> hashMap = new HashMap<String, Object>();
         hashMap.put("status", result?1:0);
+        //int status = result? 1:0;
+        int status = 0;
         if(regi.equals("0")) {
        	 hashMap.put("regi", result?"2":"0");
        } else {
        	 hashMap.put("regi", "1");
        }
-		return hashMap;
+        String resultstr = "{\"status\":"+status+",\"regi\":\"1\"}";
+        JSONObject resultObj = new JSONObject();
+		resultObj = (JSONObject) parser.parse(resultstr);
+		
+		MqttMessage m = new MqttMessage(resultObj.toString().getBytes());
+		
+		try {
+			instance.publish("topic"+deviceId, m);
+		} catch (MqttPersistenceException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (MqttException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
 	}
 	
 	@Override

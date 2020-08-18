@@ -8,6 +8,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.ListOperations;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Repository;
 
 import com.amazonaws.SdkClientException;
@@ -27,14 +30,17 @@ public class CollectorDao implements ICollectorDao{
 	// MySQL Info
 	private String driver = "com.mysql.cj.jdbc.Driver";
 	//private String url = "jdbc:mysql://localhost:3306/kubiot?serverTimezone=UTC&characterEncoding=UTF-8";
-	private String url = "jdbc:mysql://49.50.174.246:3306/kubiot?serverTimezone=UTC&characterEncoding=UTF-8";
+	private String url = "jdbc:mysql://101.101.219.90:3306/kubiot?serverTimezone=UTC&characterEncoding=UTF-8";
 	
-	private String userid = "vaninside";
+	private String userid = "root";
 	private String userpw = "dlcjf2779!";
 	
 	private Connection conn = null;
 	private PreparedStatement pstmt = null;
 	private ResultSet rs =null;
+	
+	@Autowired
+	RedisTemplate<String, Object> redisTemplate;
 	
 	// Object Storage Info
 	public static String bucketName = "openinfra";
@@ -88,6 +94,7 @@ public class CollectorDao implements ICollectorDao{
 	@Override
 	public boolean register(String deviceId, String dataType, String protocol) {
 		String sql = "INSERT INTO device (name, type, protocol) VALUES(?,?,?)";
+		System.out.println(2222);
 		try {
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setString(1, deviceId);
@@ -105,6 +112,7 @@ public class CollectorDao implements ICollectorDao{
 
 	@Override
 	public boolean insertData(String folderName, File file) {
+		System.out.println(4);
 		String objectName = file.getName();
 		//String objectName = "sample-object";
 
@@ -119,6 +127,18 @@ public class CollectorDao implements ICollectorDao{
 		    e.printStackTrace();
 		    return false;
 		}
+		return true;
+		
+	}
+	
+	public boolean insertRedis(String deviceId, Double data, String time) {
+		System.out.println(2);
+		// Redis
+		ListOperations<String, Object> values = redisTemplate.opsForList();
+
+		values.rightPush(deviceId+":input:data", data);
+		values.rightPush(deviceId+":input:time", time);
+					
 		return true;
 	}
 

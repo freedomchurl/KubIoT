@@ -41,11 +41,14 @@ public class CollectorService implements ICollectorService {
 
 	@Override
 	public boolean saveData(String deviceId, String dataType, String data, String time, String regi, String protocol) {
+		System.out.println(99);
 		if(regi.equals("0")) {// 등록안된 기기
+			System.out.println("888");
 			if(!register(deviceId, dataType, protocol)) return false;
 		} 
 		
 		if(dataType.contains("image")) {
+			System.out.println(2);
 			return saveImageData(deviceId, data, dataType);
 		} 
 		
@@ -54,6 +57,7 @@ public class CollectorService implements ICollectorService {
 
 	@Override
 	public boolean saveDoubleData(String deviceId, ArrayList<Double> data, ArrayList<String> time) {
+		System.out.println(1);
 		SimpleDateFormat format1 = new SimpleDateFormat ( "yyyyMMddmmss");
 		Date curtime = new Date();
 		String time1 = format1.format(curtime);	
@@ -80,7 +84,8 @@ public class CollectorService implements ICollectorService {
 			Date curtime2 = new Date();
 			String time2 = format2.format(curtime2);
 			
-			dao.insertData("/"+time2, file);
+			//dao.insertData("/"+time2, file);
+			dao.insertRedis(deviceId, data.get(0), time.get(0));
 		} catch (IllegalStateException e) {
 			e.printStackTrace();
 			return false;
@@ -101,6 +106,7 @@ public class CollectorService implements ICollectorService {
 		String[] str = type.split("/");
 		File file;
 
+		System.out.println(3);
 		if(str.length >= 2)
 			file = new File("./file/"+fileName+"."+str[1]);
 		else

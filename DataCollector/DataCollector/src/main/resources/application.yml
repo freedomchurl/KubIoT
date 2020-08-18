@@ -2,8 +2,8 @@ spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     password: dlcjf2779\!
-    url: jdbc:mysql://49.50.174.246:3306/kubiot?serverTimezone=UTC\&characterEncoding=UTF-8
-    username: vaninside
+    url: jdbc:mysql://101.101.219.90:3306/kubiot?serverTimezone=UTC\&characterEncoding=UTF-8
+    username: root
 ---
 
 # -- Default spring configuration
@@ -12,8 +12,10 @@ spring:
   application:
     name: USER-SERVICE
 
-# -- Eureka client
-#eureka:
-#  client:
-#    serviceUrl:
-#      defaultZone: ${EUREKA_URL:http://127.0.0.1:8088/eureka/}
+---
+
+spring:
+  redis:
+    port: 6379
+    host: 101.101.219.90
+    password: dlcjf2779!

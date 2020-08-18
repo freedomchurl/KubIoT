@@ -107,14 +107,16 @@ router.post('/pwdchange',function(req,res){
 				res.send({status:false});
 			}
 			else{
-				console.log(result.length);
-				console.log(result);	
-				if(result.length == 1){
-					res.send({status:true});
-				}
-				else{
-					res.send({status:false});
-				}
+				// console.log(result.length);
+				// console.log(result);	
+				// if(result.length == 1){
+				// 	res.send({status:true});
+				// }
+				// else{
+				// 	res.send({status:false});
+				// }
+				// update는 별다른 result가 없음
+				res.send({status:true});
 			}
 		});
 

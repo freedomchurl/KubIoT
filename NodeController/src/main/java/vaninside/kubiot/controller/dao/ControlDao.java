@@ -64,8 +64,8 @@ public class ControlDao implements IControlDao{
 		Statement stat;
 		try {
 			stat = conn.createStatement();
-			String sql = String.format("select device.name from test_groupregi inner join device "
-					+ "where test_groupregi.deviceid=device.id and groupid = %d;", groupId);
+			String sql = String.format("select device.name from groupregi inner join device "
+					+ "where groupregi.deviceid=device.id and groupid = %d;", groupId);
 	        rs= stat.executeQuery(sql);
 	        if(rs.next()) {
 	        	System.out.printf("%s\n"

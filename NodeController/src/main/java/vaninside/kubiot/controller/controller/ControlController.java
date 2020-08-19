@@ -5,6 +5,9 @@ import java.util.HashMap;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -16,28 +19,36 @@ import vaninside.kubiot.controller.service.ControlService;
 
 @RestController
 @SpringBootApplication
+@CrossOrigin(origins = {"http://localhost:8080", "http://101.101.219.90:8080"})
 public class ControlController {
 
 	@Autowired
 	ControlService service;
 	
 	@RequestMapping(value="/control", method=RequestMethod.POST)
-	public HashMap<String, Object> control(@RequestBody HashMap<String, Object> map) throws IOException {
+	public HttpEntity<HashMap> control(@RequestBody HashMap<String, Object> map) throws IOException {
 		String deviceId = (String) map.get("deviceId");
 		String protocol = (String) map.get("protocol");
 		String request = (String) map.get("request");
 		
 		boolean result = service.Request(deviceId, protocol, request);
+		HttpHeaders headers = new HttpHeaders();
+		headers.add("Access-Control-Allow-Headers", "Authorization");
+		headers.add("Access-Control-Expose-Headers", "*");
 		
 		// return json
 		HashMap<String, Object> hashMap = new HashMap<String, Object>();
         hashMap.put("status", result?1:0);
         
-		return hashMap;
+
+		HttpEntity<HashMap> entity = new HttpEntity<>(hashMap,headers);
+		
+		return entity;
 	}
 	
+	//HashMap<String, Object>
 	@RequestMapping(value="/group-control", method=RequestMethod.POST)
-	public HashMap<String, Object> groupControl(@RequestBody HashMap<String, Object> map) throws IOException {
+	public HttpEntity<HashMap> groupControl(@RequestBody HashMap<String, Object> map) throws IOException {
 
 		String request = (String) map.get("request");
 		int groupId = (int)map.get("groupId");
@@ -48,7 +59,16 @@ public class ControlController {
 		HashMap<String, Object> hashMap = new HashMap<String, Object>();
         hashMap.put("status", result?1:0);
         
-		return hashMap;
+        HttpHeaders headers = new HttpHeaders();
+		headers.add("Access-Control-Allow-Headers", "Authorization");
+		headers.add("Access-Control-Expose-Headers", "*");
+		
+
+		HttpEntity<HashMap> entity = new HttpEntity<>(hashMap,headers);
+		
+		return entity;
+        
+		//return hashMap;
 	}
 	
 	

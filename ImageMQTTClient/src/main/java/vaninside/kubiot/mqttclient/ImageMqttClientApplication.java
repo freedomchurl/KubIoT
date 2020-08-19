@@ -74,7 +74,6 @@ public class ImageMqttClientApplication {
 					  if((Integer) obj.get("status") == 1){
 					    String groupName = (String) obj.get("name");
 					    // 그룹 채널 가입
-					    System.out.println("subscirbe topic"+ID);
 					    instance.subscribe(TOPIC+ID, 0);
 					    // 그룹 추가
 					    groupList.add((String)obj.get("name"));
@@ -94,13 +93,12 @@ public class ImageMqttClientApplication {
 	}
 	
 	public static void control(MqttMessage message) {
-		System.out.println("control "+message.toString());
+		System.out.println("관리자 제어 명령 : "+message.toString());
 		// 제어 내용
 	}
 		
 	@Scheduled(cron = "*/4 * * * * *")
 	public void send() throws IOException, MqttException {
-		System.out.println("send");
 		//File file = new File(".\\up_tri.png");
         byte[] imageInByte;
         
@@ -113,7 +111,7 @@ public class ImageMqttClientApplication {
         //System.out.println(Arrays.toString(imageInByte));
          
         baos.close();
-
+        System.out.println("이미지를 전송하였습니다.");
         SimpleDateFormat format1 = new SimpleDateFormat ( "yyyy-MM-dd");
 		Date time = new Date();
 		String time1 = format1.format(time);	

@@ -5,7 +5,7 @@ const fs = require('fs');
 const util = require('util');
 const readFile = util.promisify(fs.readFile);
 
-const ID = "MQTTF01" // 디바이스 아이디
+const ID = "MQTTF02" // 디바이스 아이디
 const TYPE = "float" // 디바이스 데이터 형식
 const TOPIC = "topic" // 서버 토픽
 var regi = "0"     // 등록 상태

@@ -38,7 +38,7 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
 public class WebController {
 
 	//String collector_url = "http://101.101.219.90:8080/"; // 수집 서버
-	String collector_url = "http://localhost:8080/sendBData"; // 수집 서버
+	String collector_url = "http://101.101.219.90:8081/sendBData"; // 수집 서버
 	
 	public static String ID = "HTTPI01"; // 디바이스 아이디
 	public static String TYPE = "image/png"; // 디바이스 데이터 형식
@@ -96,7 +96,7 @@ public class WebController {
 		
 		Double data = Math.random();
 		//String msg = "{\"deviceId\":\""+ ID+ "\", \"type\":\"" + TYPE +"\",\"regi\":\"" +regi+"\", \"time\":[\"" + time1 + "\"], \"data\":["+data+"]}";
- 		System.out.println(msg);
+ 		System.out.println("전송 데이터 : "+data);
 		HttpEntity<String> entity = new HttpEntity<>(final_msg,headers);
 		String answer = restTemplate.postForObject(collector_url, entity, String.class);
 		System.out.println(answer);
@@ -129,22 +129,27 @@ public class WebController {
 		    // 그룹 추가
 		    groupList.add((String)obj.get("name"));
 		  	} else if((obj.get("status").toString().equals("2"))){
+		  		/*
 		  		// 등록 api 날리세요.
 		  		HttpHeaders headers = new HttpHeaders();
 				headers.setContentType(MediaType.APPLICATION_JSON);
 				RestTemplate restTemplate = new RestTemplate();
 //				headers.add("Content-Type", "multipart/form-data; boundary=----WebKitFormBoundary8UhbmC4vAvBxT6z3"); //multipart/form-data 있는 경우 사용.
 				HttpEntity<String> entity = new HttpEntity<>(null,headers);
-				String answer = restTemplate.getForObject("http://localhost:8090" + "?id="+ID, String.class);
+				String answer = restTemplate.getForObject("http:101.101.219.90:8083" + "?id="+ID, String.class);
 				System.out.println(answer);
 				receive(answer);
+				*/ 
+		  		// 이미지는 제어가 없음.
+		  	} else {
+
+				  // 제어 실행.
+				   control(obj.get("req").toString());
 		  	}
-		  // 제어 실행.
-		  // control();
 	}
 	
 	public void control(String msg) {
-		System.out.println(msg);
+		System.out.println("관리자 제어 명령 : " + msg);
 		// 제어 내용
 	}
 	

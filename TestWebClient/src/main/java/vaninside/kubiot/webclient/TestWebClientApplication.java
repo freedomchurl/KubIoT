@@ -26,7 +26,7 @@ public class TestWebClientApplication {
 	     = new ParameterizedTypeReference<ServerSentEvent<String>>() {};
 	
 	     WebClient cl =  WebClient.builder()
-	    		    .baseUrl("http://localhost:8087?id=\'HTTPF01\'")
+	    		    .baseUrl("http://101.101.219.90:8083?id=\'HTTPF01\'")
 	    		    .clientConnector((ClientHttpConnector) new ReactorClientHttpConnector(
                  HttpClient.create().followRedirect(true)
          ))

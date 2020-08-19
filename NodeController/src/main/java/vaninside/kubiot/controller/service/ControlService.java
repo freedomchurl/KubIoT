@@ -31,7 +31,9 @@ public class ControlService implements IControlService{
 	public static String topic = "topic";
 	private static final String MQTT_PUBLISHER_ID = "control-server";
     private static final String MQTT_SERVER_ADDRES= "tcp://101.101.219.90:1883";
-    private static IMqttClient instance;
+	//private static final String MQTT_SERVER_ADDRES= "tcp://localhost:1883";
+    
+	private static IMqttClient instance;
     private final CopyOnWriteArrayList<SseEmitter> emitters = new CopyOnWriteArrayList<>();
     private final ArrayList<String> deviceList = new ArrayList<String>();
 	

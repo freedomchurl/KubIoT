@@ -42,6 +42,10 @@ router.get('/getgroupinfo',function(req,res){
 				console.log(result.length);
 				console.log(result);	
 				if(result.length >= 1){
+					for(let i=0;i<result.length;i++)
+					{
+						result[i].dNum = 0;
+					}
 					res.send({status:true,payload:result});
 				}
 				else{

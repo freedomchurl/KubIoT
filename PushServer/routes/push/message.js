@@ -41,7 +41,7 @@ router.get('/checkpush',function(req,res){
 					console.log('------');
 					
 					
-					res.send({status:true,payload:result});
+					res.send({status:true});
 					}
 
 					});
@@ -82,7 +82,7 @@ router.get('/getpushnum',function(req,res){
 					// {
 					//     resultarray.push(result[i].message);
 					// }
-					res.send({status:true,payload:result});
+					res.send({status:true,payload:result[0]});
 					}
 					else
 					{

@@ -31,8 +31,8 @@ router.post('/getDeviceongroup', function (req, res) {
 		//data = "id=" + id + " and " + "pass=" + pwd;
 		//	data = [memo,id];
 		
-		var exec = conn.query('select device.id,device.name,device.time,device.protocol,device.type,device.location,device.memo from groupregi inner join device where device.id=groupregi.deviceid and groupregi.groupid=?',
-			function (err, result) {
+		var exec = conn.query('select device.id id,device.name name,device.time time,device.protocol protocol,device.type type,device.location location,device.memo memo from groupregi inner join device where device.id=groupregi.deviceid and groupregi.groupid=?',
+			gID,function (err, result) {
 			conn.release();
 			res.header("Access-Control-Allow-Headers", "Authorization");
 			res.header("Access-Control-Expose-Headers", "*");
@@ -49,7 +49,10 @@ router.post('/getDeviceongroup', function (req, res) {
 				// 	res.send({status:false});
 				// }
 				// update는 별다른 result가 없음
-				res.send({ status: true }); // 성공했으면.
+				if(result.length>=1)
+					res.send({ status: true,payload:result }); // 성공했으면.
+				else
+					res.send({status:true,payload:null})
 			}
 		});
 

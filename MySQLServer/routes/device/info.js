@@ -101,7 +101,7 @@ router.post('/memochange',function(req,res){
 			throw err;
 		}
 		//data = {id:id,pass:pwd};
-		data = "id=" + id + " and " + "pass=" + pwd;
+		//data = "id=" + id + " and " + "pass=" + pwd;
 		data = [memo,id];
 		var exec = conn.query('update device set memo=? where id=?',data,function(err,result){
 			conn.release();

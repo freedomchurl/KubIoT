@@ -15,6 +15,89 @@ charset : 'utf8'
 
 
 router.use(express.json());
+router.get('/checkpush',function(req,res){
+	var key = req.query.pushID;
+	//var key = req.query.token;
+	pool.getConnection(function(err,conn){
+			if(err){
+			if(conn){
+			conn.release();
+			}
+			throw err;
+			}
+//			key가 2라면, 2번째 페이지. 페이지당 20개니까,
+			//(key-1)*20 ~ 20
+			//var startindex = (key-1)*20;
+				var exec = conn.query('update push_data set ischecked=1 where id=?',key,function(err,result){
+					conn.release();
+					
+					res.header("Access-Control-Allow-Headers","Authorization");
+					res.header("Access-Control-Expose-Headers","*");
+					if(err){
+					res.send({status:false});
+					}
+					else{	
+					console.log(result);
+					console.log('------');
+					
+					
+					res.send({status:true,payload:result});
+					}
+
+					});
+
+	});
+
+});
+router.get('/getpushnum',function(req,res){
+
+	//var key = req.query.token;
+	pool.getConnection(function(err,conn){
+			if(err){
+			if(conn){
+			conn.release();
+			}
+			throw err;
+			}
+//			key가 2라면, 2번째 페이지. 페이지당 20개니까,
+			//(key-1)*20 ~ 20
+			//var startindex = (key-1)*20;
+				var exec = conn.query('select count(*) as pushnum from push_data where ischecked=0',function(err,result){
+					conn.release();
+					
+					res.header("Access-Control-Allow-Headers","Authorization");
+					res.header("Access-Control-Expose-Headers","*");
+					if(err){
+					res.send({status:false});
+					}
+					else{	
+					console.log(result);
+					console.log('------');
+					
+					//res.send({"value":["DEVICE 01 ERROR", "DEVICE 03 ERROR", "DEVICE 05 ERROR"]})
+					if(result.length){
+					console.log('Success');
+					// var resultarray = [];
+					// for(var i=0;i<result.length;i++)
+					// {
+					//     resultarray.push(result[i].message);
+					// }
+					res.send({status:true,payload:result});
+					}
+					else
+					{
+					console.log('Success');
+					res.send({status:true,payload:null});
+					}
+					}
+
+					});
+
+	});
+
+});
+
+
 router.get('/getpushlist',function(req,res){
 
 		//var key = req.query.token;

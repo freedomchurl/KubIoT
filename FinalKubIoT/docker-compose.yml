@@ -1,0 +1,35 @@
+version: '2.0'
+services:
+  collector:
+    image: collector
+    ports: 
+      - "8081:8081"
+    command: [java, -jar, collector.jar]
+  
+  mqtt:
+    image: ansi/mosquitto
+    ports: 
+      - "1883:1883"
+    command: [mosquitto, -v]
+  
+  analyzer:
+    image: analyzer
+    ports:
+      - "8082:8082"
+    command: [java, -jar, analyzer.jar]
+ 
+  push:
+    image: push
+    ports:
+      - "7878:7878"
+  
+  controller:
+    image: controller
+    ports:
+      - "8083:8083"
+    command: [java, -jar, controller.jar]
+  
+  dashboard:
+    image: dashboard
+    ports:
+      - "7272:7272"

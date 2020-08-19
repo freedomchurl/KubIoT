@@ -118,12 +118,8 @@ export default {
     clickcard() {
       console.log("Click Card");
     },
-  },
-  mounted() {
-    console.log("Mounted");
-  },
-  created() {
-    var vm = this;
+    LoadData(){
+      var vm = this;
     axios
       .get("http://" + IP.IP + ":7878/push/message/getpushnum")
       .then((res) => {
@@ -159,7 +155,7 @@ export default {
             // 미해결
             else tmp.ischecked == true; // 해결
 
-            vm.pushset.append(tmp); // 추가한다.
+            vm.pushset.push(tmp); // 추가한다.
           }
         }
       });
@@ -190,6 +186,13 @@ export default {
       });
 
     // totalDevice, totalGroup, abnormalDevice 를 가져와야함
+    }
+  },
+  mounted() {
+    console.log("Mounted");
+  },
+  created() {
+    this.LoadData();
   },
   // created(){
   //     console.log('Test here');

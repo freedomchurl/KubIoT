@@ -1,5 +1,7 @@
 <template>
   <div id="top">
+    <!-- <DeviceModalVue/> -->
+    <!-- <modals-container /> -->
     <div id="menuname">
       <span id="title">장치 리스트</span>
     </div>
@@ -42,24 +44,6 @@
           </tr>
         </thead>
         <tbody>
-          <!-- <tr>
-      <th scope="row">1</th>
-      <td>Mark</td>
-      <td>Otto</td>
-      <td>@mdo</td>
-      <td><button>ddd</button></td>
-    </tr>
-    <tr>
-      <th scope="row">2</th>
-      <td>Jacob</td>
-      <td>Thornton</td>
-      <td>@fat</td>
-    </tr
-    <tr>
-      <th scope="row">3</th>
-      <td colspan="2">Larry the Bird</td>
-      <td>@twitter</td>
-          </tr>-->
           <tr v-for="(data,index) in dataset" v-bind:key="index">
             <td>{{data.name}}</td>
             <td>{{data.memo}}</td>
@@ -81,10 +65,12 @@
 import { EventBus } from "../../utils/event-bus.js";
 import axios from "axios";
 import IP from "../../../static/IP.json";
-//import router from '../../router/index.js'
-//const routespath = ['/list','/analytic','/group','/admin'];
+import DeviceModal from "./Modal/DeviceModal.vue";
 
 export default {
+  components:{
+    // 'DeviceModalVue':DeviceModal
+  },
   props: ["propsdata"],
   data() {
     return {
@@ -95,47 +81,34 @@ export default {
         { deviceid: "지민아", memo: "오래오래 사랑해", location: "" },
       ],
       dataset: [],
-      totalDevice: '',
-      totalGroup: '',
-      abnormalDevice: '',
+      totalDevice: "",
+      totalGroup: "",
+      abnormalDevice: "",
     };
   },
   methods: {
-    selectDevice(index) {
-      console.log(index + " " + "device selected");
-    },
-    clicklist() {
-      console.log("Click List");
-      //EventBus.$emit("click-sidemenu",input,this.menulist[input]); // index를 넘겨준다.
-    },
-    clickcard() {
-      console.log("Click Card");
-    },
-  },
-  mounted() {
-    console.log("Mounted");
-  },
-  created() {
-    var vm = this;
-    axios.get("http://" + IP.IP + ":7878/push/message/getpushnum").then((res) => {
-      console.log(res.data);
+    LoadData(){
+      var vm = this;
+    axios
+      .get("http://" + IP.IP + ":7878/push/message/getpushnum")
+      .then((res) => {
+        console.log(res.data);
 
-    //   vm.totalGroup = res.data.payload.gnum;
-        if(res.data.status==true)
-        {
-            vm.abnormalDevice = res.data.payload.pushnum;
+        //   vm.totalGroup = res.data.payload.gnum;
+        if (res.data.status == true) {
+          vm.abnormalDevice = res.data.payload.pushnum;
         }
-    });
+      });
     axios.get("http://" + IP.IP + ":7676/device/info/devicenum").then((res) => {
       console.log(res.data);
 
       vm.totalDevice = res.data.payload.dnum;
     });
-    axios.get('http://' + IP.IP+ ':7676/device/info/groupnum').then(res => { console.log(res.data)
+    axios.get("http://" + IP.IP + ":7676/device/info/groupnum").then((res) => {
+      console.log(res.data);
 
-            vm.totalGroup = res.data.payload.gnum;
-       
-        })
+      vm.totalGroup = res.data.payload.gnum;
+    });
     EventBus.$on("update-list", function () {
       console.log("aaaprint");
       axios
@@ -162,22 +135,53 @@ export default {
       });
 
     // totalDevice, totalGroup, abnormalDevice 를 가져와야함
+    },
+    selectDevice(index) {
+      console.log(index + " " + "device selected");
+      this.doc_del_rendar(index);
+    },
+    testFN(){
+      console.log("WOW!!!! HARD - finish");
+    },
+    testFN2(){
+      console.log("WOW!!!! HARD");
+    },
+    doc_del_rendar(index) {
+      
+      this.$modal.show(
+        DeviceModal,
+        {
+          device_info: this.dataset[index],
+          modal: this.$modal,
+        },
+        {
+          name: "dynamic-modal",
+          width: "800px",
+          height: "600px",
+          draggable: false,
+        },{
+          'closed':this.testFN,
+          'before-close':this.testFN2,
+        }
+      );
+    },
+    clicklist() {
+      console.log("Click List");
+      //EventBus.$emit("click-sidemenu",input,this.menulist[input]); // index를 넘겨준다.
+    },
+    clickcard() {
+      console.log("Click Card");
+    },
   },
-  // created(){
-  //     console.log('Test here');
-  //     var vm = this;
-  //     EventBus.$on("click-sidemenu",function(index,name){
-  //         console.log("Event!!2" + name);
-  //         //this.currentindex = index;
-  //         vm.menuname = name;
-  //         //this.setName(name);
-  //         //router.push('/main' + routespath[index]);
-  //         router.push('/main' + routespath[index]).catch(()=>{});
-  //         // Redirect 가 안됨.
-  //         //this.selectContent(index);
-  //     });
-  // },
+  mounted() {
+    console.log("Mounted");
+  },
+  created() {
+    this.LoadData();
+  },
 };
+
+
 </script>
 
 <style scoped>
@@ -197,6 +201,7 @@ div#state-value {
   border-left: 1px solid rgb(70, 70, 70);
   height: 80%;
 }
+
 div {
   width: inherit;
   white-space: nowrap;

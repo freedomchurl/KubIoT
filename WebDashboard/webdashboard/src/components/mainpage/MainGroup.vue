@@ -57,6 +57,7 @@
 //const routespath = ['/list','/analytic','/group','/admin'];
 import axios from "axios";
 import IP from "../../../static/IP";
+import AddGroupModalVue from './Modal/AddGroupModal.vue';
 
 export default {
   data() {
@@ -72,6 +73,32 @@ export default {
   methods: {
     addGroup() {
       console.log("그룹추가");
+      this.doc_del_rendar()
+    },
+    doc_del_rendar() {
+      this.$modal.show(
+        AddGroupModalVue,
+        {
+          //device_info: this.dataset[index],
+          modal: this.$modal,
+        },
+        {
+          name: "dynamic-modal",
+          width: "800px",
+          height: "600px",
+          draggable: false,
+        },
+        {
+          closed: this.testFN,
+          "before-close": this.testFN2,
+        }
+      );
+    },
+    testFN(){
+      console.log("WOW!!!! HARD - finish");
+    },
+    testFN2(){
+      console.log("WOW!!!! HARD");
     },
     groupselect(index) {
       console.log(index);
@@ -133,8 +160,12 @@ export default {
 
               if (res.data.payload != null) {
                 for (let i = 0; i < res.data.payload.length; i++) {
-                  vm.groups[res.data.payload[i].gID].dNum =
-                    res.data.payload[i].dnum;
+                  console.log(res.data.payload[i].gID-1);
+                  for(let j = 0;j<vm.groups.length;j++){
+                    console.log('j-th : ' + vm.groups[j].gID);
+                    if(vm.groups[j].id == res.data.payload[i].gID)
+                      vm.groups[j].dNum = res.data.payload[i].dnum;
+                  }
                 }
               }
             });

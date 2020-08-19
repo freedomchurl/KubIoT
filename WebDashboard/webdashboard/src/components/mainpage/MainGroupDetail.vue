@@ -49,7 +49,7 @@
             <td>{{data.type}}</td>
             <td>{{data.time}}</td>
             <td>
-              <button v-on:click="deleteDevice(index)" class="btn btn-warning">제거</button>
+              <button v-on:click="deleteDevice(index)" class="btn btn-danger">제거</button>
             </td>
           </tr>
         </tbody>

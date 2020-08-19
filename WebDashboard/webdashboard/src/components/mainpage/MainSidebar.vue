@@ -10,6 +10,10 @@
                 <span id="content-text">{{menu.des}}</span>
             </li>
         </ul>
+        <div id="footer">
+            2020 Vaninside, 
+            All rights reserved
+        </div>
     </div>
 </template>
 
@@ -146,6 +150,11 @@ export default {
         padding-top:0rem;
         padding-left:1rem;
         padding-bottom: 1rem;
+    }
+    #footer{
+        padding: 0 0 0 0;
+        text-align: center;
+        margin-top: 10rem;
     }
 
 </style>

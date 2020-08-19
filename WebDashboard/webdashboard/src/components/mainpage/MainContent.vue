@@ -11,7 +11,7 @@ import {EventBus} from '../../utils/event-bus.js'
 //import {EventBus2} from '../../utils/event-bus.js'
 import router from '../../router/index.js'
 // const routespath = ['/list','/analytic','/group','/admin'];
-const routesname = ['list','analytic','group','admin'];
+const routesname = ['list','analytic','group','admin','push'];
 
 export default {
     data(){

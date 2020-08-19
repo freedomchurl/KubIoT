@@ -13,6 +13,7 @@ import MenuManager from '../components/mainpage/MainManager.vue'
 import MenuAnalytic from '../components/mainpage/MainAnalytic.vue'
 import MenuGroup from '../components/mainpage/MainGroup.vue'
 //import indexPage from '../App.vue'
+import MenuPush from '../components/mainpage/MainPush.vue'
 
 Vue.use(VueRouter)
 
@@ -61,7 +62,13 @@ const route = [
           path:'group',
           name:'group',
           component:MenuGroup
-        }
+        },
+        {
+          path:'push',
+          name:'push',
+          component:MenuPush
+        },
+        
       ]
     },
     {

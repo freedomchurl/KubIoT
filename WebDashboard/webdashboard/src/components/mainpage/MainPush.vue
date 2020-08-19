@@ -1,7 +1,7 @@
 <template>
   <div id="top">
     <div id="menuname">
-      <span id="title">장치 리스트</span>
+      <span id="title">이상 장치 알림 리스트</span>
     </div>
     <div id="current-state">
       <div id="total-device">
@@ -33,42 +33,21 @@
         <thead>
           <tr>
             <th scope="col">장치 ID</th>
-            <th scope="col">메모</th>
-            <th scope="col">위치</th>
-            <th scopr="col">프로토콜</th>
-            <th scope="col">전송 타입</th>
-            <th scope="col">등록 시간</th>
-            <th scope="col">관리</th>
+            <th scope="col">발생 시간</th>
+            <th scope="col">해결</th>
           </tr>
         </thead>
         <tbody>
-          <!-- <tr>
-      <th scope="row">1</th>
-      <td>Mark</td>
-      <td>Otto</td>
-      <td>@mdo</td>
-      <td><button>ddd</button></td>
-    </tr>
-    <tr>
-      <th scope="row">2</th>
-      <td>Jacob</td>
-      <td>Thornton</td>
-      <td>@fat</td>
-    </tr
-    <tr>
-      <th scope="row">3</th>
-      <td colspan="2">Larry the Bird</td>
-      <td>@twitter</td>
-          </tr>-->
-          <tr v-for="(data,index) in dataset" v-bind:key="index">
-            <td>{{data.name}}</td>
-            <td>{{data.memo}}</td>
-            <td>{{data.location}}</td>
-            <td>{{data.protocol}}</td>
-            <td>{{data.type}}</td>
+          <tr v-for="(data,index) in pushset" v-bind:key="index">
+            <td id="push-did">{{data.dName}}</td>
             <td>{{data.time}}</td>
-            <td>
-              <button v-on:click="selectDevice(index)" class="btn btn-primary">관리</button>
+            <td id="check-field">
+              <input
+                type="checkbox"
+                id="checkbox-push"
+                v-on:change="checkSet(index)"
+                v-model="data.ischecked"
+              />
             </td>
           </tr>
         </tbody>
@@ -94,13 +73,41 @@ export default {
         { deviceid: "지민아", memo: "진짜진짜 사랑해", location: "" },
         { deviceid: "지민아", memo: "오래오래 사랑해", location: "" },
       ],
-      dataset: [],
-      totalDevice: '',
-      totalGroup: '',
-      abnormalDevice: '',
+      test_pushset: [
+        {
+          dID: 1,
+          dName: "장치01",
+          time: "2020년",
+          ischecked: false,
+          pushID: 1,
+        },
+      ],
+      pushset: [], // dID(장치 key), dName(장치 ID , NAME) , time(발생 시간), ischecked ( true, 해결됨, false 해결 안됨), pushID(푸시key)
+      totalDevice: "",
+      totalGroup: "",
+      abnormalDevice: "",
     };
   },
   methods: {
+    checkSet(index) {
+        var vm = this;
+      console.log(index + " " + "push selected");
+      var inputcheck = this.pushset[index].ischecked == true ? 1 : 0; // 
+      axios
+        .get("http://" + IP.IP + ":7878/push/message/checkpush",{
+          params: { pushID: vm.pushset[index].pushID, ischecked:inputcheck },
+          timeout: 3000, // 1초 이내에 응답이 없으면 에러 처리
+        })
+        .then((res) => {
+          console.log(res.data);
+
+          //   vm.totalGroup = res.data.payload.gnum;
+          if (res.data.status == true) {
+            //vm.abnormalDevice = res.data.payload.pushnum;
+            console.log("Checked changed successfully");
+          }
+        });
+    },
     selectDevice(index) {
       console.log(index + " " + "device selected");
     },
@@ -117,25 +124,46 @@ export default {
   },
   created() {
     var vm = this;
-    axios.get("http://" + IP.IP + ":7878/push/message/getpushnum").then((res) => {
-      console.log(res.data);
+    axios
+      .get("http://" + IP.IP + ":7878/push/message/getpushnum")
+      .then((res) => {
+        console.log(res.data);
 
-    //   vm.totalGroup = res.data.payload.gnum;
-        if(res.data.status==true)
-        {
-            vm.abnormalDevice = res.data.payload.pushnum;
+        //   vm.totalGroup = res.data.payload.gnum;
+        if (res.data.status == true) {
+          vm.abnormalDevice = res.data.payload.pushnum;
         }
-    });
+      });
     axios.get("http://" + IP.IP + ":7676/device/info/devicenum").then((res) => {
       console.log(res.data);
 
       vm.totalDevice = res.data.payload.dnum;
     });
-    axios.get('http://' + IP.IP+ ':7676/device/info/groupnum').then(res => { console.log(res.data)
 
-            vm.totalGroup = res.data.payload.gnum;
-       
-        })
+    axios.get("http://" + IP.IP + ":7676/device/info/groupnum").then((res) => {
+      console.log(res.data);
+
+      vm.totalGroup = res.data.payload.gnum;
+    });
+
+    axios
+      .get("http://" + IP.IP + ":7878/push/message/getpushlist")
+      .then((res) => {
+        console.log(res.data);
+
+        //   vm.totalGroup = res.data.payload.gnum;
+        if (res.data.status == true && res.data.payload != null) {
+          for (var i = 0; i < res.data.payload.length; i++) {
+            var tmp = res.data.payload[i];
+            if (tmp.ischecked == 0) tmp.ischecked == false;
+            // 미해결
+            else tmp.ischecked == true; // 해결
+
+            vm.pushset.append(tmp); // 추가한다.
+          }
+        }
+      });
+
     EventBus.$on("update-list", function () {
       console.log("aaaprint");
       axios
@@ -181,6 +209,13 @@ export default {
 </script>
 
 <style scoped>
+table {
+  width: 100%;
+}
+#check-field {
+  width: 3rem;
+  text-align: center;
+}
 div#state-value {
   color: rgb(85, 107, 122);
   font-size: 3rem;
@@ -211,6 +246,9 @@ div {
 }
 #abnormal-device {
   flex: 1;
+}
+#checkbox-push {
+  margin-top: 5px;
 }
 #current-state {
   background-color: rgb(190, 190, 190);

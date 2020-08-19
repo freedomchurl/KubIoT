@@ -74,7 +74,7 @@ export default {
               alert("비밀번호 변경 성공");
               vm.newAdminPass = '';
               vm.newAdminPass_confirm = '';
-              
+
               //this.$router.push({name:'main',params:{projectname:vm.titleprops}})
             } else {
               alert("비밀번호 변경 오류입니다.");
@@ -88,6 +88,17 @@ export default {
   },
   created() {
       console.log(this.adminId);
+      var vm = this;
+    axios.get('http://' + IP.IP+ ':7676/device/info/devicenum').then(res => { console.log(res.data)
+
+            vm.totalDevice = res.data.payload.dnum;
+       
+        })
+        axios.get('http://' + IP.IP+ ':7676/device/info/groupnum').then(res => { console.log(res.data)
+
+            vm.totalGroup = res.data.payload.gnum;
+       
+        })
     // EventBus.$on("update-list", function () {
     //   console.log("aaaprint");
     // });

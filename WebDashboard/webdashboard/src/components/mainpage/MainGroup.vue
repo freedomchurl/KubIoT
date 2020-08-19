@@ -32,41 +32,50 @@
       <div id="group-button">
         <!-- 그룹 관리 icon -->
         <span class="col-sm-2 col-sm-offset-5">
-          <button v-bind:class="primebtn" @click="changePwd">그룹 추가</button>
+          <button v-bind:class="primebtn" @click="addGroup">그룹 추가</button>
         </span>
       </div>
     </div>
 
     <div id="group-card-box">
-        <div class="group-box" v-on:click="groupselect(index)" v-for="(group,index) in groups" v-bind:key="index">
-            <div id="group-name">{{group.gName}}</div>
-            <div id="text-device-num">장치 수 : {{group.dNum}}</div>
-        </div>
+      <div
+        class="group-box"
+        v-on:click="groupselect(index)"
+        v-for="(group,index) in groups"
+        v-bind:key="index"
+      >
+        <div id="group-name">{{group.name}}</div>
+        <div id="text-device-num">장치 수 : {{group.dNum}}</div>
+      </div>
     </div>
-
   </div>
 </template>
 
 <script>
-import { EventBus } from "../../utils/event-bus.js";
+// import { EventBus } from "../../utils/event-bus.js";
 //import router from '../../router/index.js'
 //const routespath = ['/list','/analytic','/group','/admin'];
+import axios from "axios";
+import IP from "../../../static/IP";
 
 export default {
   data() {
     return {
-      totalDevice: 4,
-      totalGroup: 3,
-      abnormalDevice: 2,
+      totalDevice: "",
+      totalGroup: "",
+      abnormalDevice: "",
       primebtn: "btn btn-primary disabled btn-block",
-      groups:[{gID:0,gName:'그룹 A',dNum:3},{gID:1,gName:'그룹 B',dNum:10},{gID:2,gName:'그룹 C',dNum:4},{gID:3,gName:'그룹 D',dNum:2}],
+      groups: [], //{gID:0,gName:'그룹 A',dNum:3},{gID:1,gName:'그룹 B',dNum:10},{gID:2,gName:'그룹 C',dNum:4},{gID:3,gName:'그룹 D',dNum:2}],
     };
   },
   props: ["propsdata"],
   methods: {
-      groupselect(index){
-          console.log(index);
-      },
+    addGroup() {
+      console.log("그룹추가");
+    },
+    groupselect(index) {
+      console.log(index);
+    },
     clicklist() {
       console.log("Click List");
       //EventBus.$emit("click-sidemenu",input,this.menulist[input]); // index를 넘겨준다.
@@ -78,10 +87,64 @@ export default {
   mounted() {
     console.log("Mounted");
   },
-  crearted() {
-    EventBus.$on("update-list", function () {
-      console.log("aaaprint");
+  created() {
+    var vm = this;
+
+    axios
+      .get("http://" + IP.IP + ":7878/push/message/getpushnum")
+      .then((res) => {
+        console.log(res.data);
+
+        //   vm.totalGroup = res.data.payload.gnum;
+        if (res.data.status == true) {
+          vm.abnormalDevice = res.data.payload.pushnum;
+        }
+      });
+
+    axios.get("http://" + IP.IP + ":7676/device/info/devicenum").then((res) => {
+      console.log(res.data);
+
+      vm.totalDevice = res.data.payload.dnum;
     });
+    axios.get("http://" + IP.IP + ":7676/device/info/groupnum").then((res) => {
+      console.log(res.data);
+
+      vm.totalGroup = res.data.payload.gnum;
+
+      axios
+        .get("http://" + IP.IP + ":7676/device/info/getgroupinfo")
+        .then((res) => {
+          console.log(res.data);
+
+          //vm.totalGroup = res.data.payload.gnum;
+
+          if (res.data.payload == null) console.log("지민바보");
+
+          vm.groups = res.data.payload;
+
+          axios
+            .get("http://" + IP.IP + ":7676/device/info/dnumpergroup")
+            .then((res) => {
+              console.log(res.data);
+
+              //vm.totalGroup = res.data.payload.gnum;
+
+              if (res.data.payload == null) console.log("지민바보");
+
+              if (res.data.payload != null) {
+                for (let i = 0; i < res.data.payload.length; i++) {
+                  vm.groups[res.data.payload[i].gID].dNum =
+                    res.data.payload[i].dnum;
+                }
+              }
+            });
+        });
+    });
+    // 그룹별 device의 수를 가져오는 역할
+
+    // EventBus.$on("update-list", function () {
+    //   console.log("aaaprint");
+    // });
   },
   // created(){
   //     console.log('Test here');
@@ -101,38 +164,38 @@ export default {
 </script>
 
 <style scoped>
-#text-device-num{
-    text-align: right;
-    height: 30%;
-    font-size: 1.3rem;
-    font-weight: bold;
-    padding-right: 30px;
-    color: rgb(85,107,122);
+#text-device-num {
+  text-align: right;
+  height: 30%;
+  font-size: 1.3rem;
+  font-weight: bold;
+  padding-right: 30px;
+  color: rgb(85, 107, 122);
 }
-#group-name{
-    color: rgb(85,107,122);
-    font-size: 2.5rem;
-    font-weight: bold;
-    text-align: left;
-    height: 70%;
-    padding-left: 30px;
-    padding-top: 20px;
+#group-name {
+  color: rgb(85, 107, 122);
+  font-size: 2.5rem;
+  font-weight: bold;
+  text-align: left;
+  height: 70%;
+  padding-left: 30px;
+  padding-top: 20px;
 }
-#group-card-box{
-    margin: 2rem 2rem 2rem 2rem;
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    flex-wrap:wrap;
+#group-card-box {
+  margin: 2rem 2rem 2rem 2rem;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  flex-wrap: wrap;
 }
-.group-box{
-    margin: 1rem 1rem 1rem 1rem;
-    background-color:rgb(224,224,224);
-    height: 200px;
-    width: 450px;
-    color: black;
-    /* border: 1px solid rgb(85, 107, 122); */
-    /* box-shadow: 5px 10px 2px rgb(85, 107, 122); */
+.group-box {
+  margin: 1rem 1rem 1rem 1rem;
+  background-color: rgb(224, 224, 224);
+  height: 200px;
+  width: 450px;
+  color: black;
+  /* border: 1px solid rgb(85, 107, 122); */
+  /* box-shadow: 5px 10px 2px rgb(85, 107, 122); */
 }
 #adminbox {
   display: flex;

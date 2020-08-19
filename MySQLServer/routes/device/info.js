@@ -69,7 +69,7 @@ router.get('/groupnum',function(req,res){
 	//	data = "id=" + id + " and " + "pass=" + pwd;
 	//	data = [id, pwd];
 		// MySQL에서, 서버에 projectinfo가 있을 시, true를 return한다. 
-		var exec = conn.query('select count(id) gnum from group',function(err,result){
+		var exec = conn.query('select count(id) gnum from groupinfo',function(err,result){
 			conn.release();
 			res.header("Access-Control-Allow-Headers","Authorization");
 			res.header("Access-Control-Expose-Headers","*");

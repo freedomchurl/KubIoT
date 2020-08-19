@@ -54,9 +54,12 @@ public class MainActivity extends AppCompatActivity {
                                                JSONArray rs = (JSONArray)obj.get("payload");
 
                                                pushArray.clear();
+                                               Log.d("length", ""+rs.length());
                                                for(int i=0; i<rs.length(); i++){
                                                    JSONObject objj = new JSONObject(rs.get(i).toString());
-                                                   pushArray.add(objj.get("dName") + " 기기에서 이상을 감지하였습니다.");
+                                                   if((int)objj.get("ischecked") == 0){
+                                                       pushArray.add(objj.get("dName") + " 기기에서 이상을 감지하였습니다.");
+                                                   }
 
                                                }
                                                mListAdapter.notifyDataSetChanged();

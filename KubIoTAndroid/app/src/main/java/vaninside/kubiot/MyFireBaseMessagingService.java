@@ -37,7 +37,7 @@ public class MyFireBaseMessagingService extends FirebaseMessagingService{
                     new NotificationCompat.Builder(this, channelId)
                             .setSmallIcon(R.mipmap.ic_launcher)
                             .setContentTitle("NOTICE")
-                            .setContentText(messageBody)
+                            .setContentText(messageBody + " 에서 이상이 감지되었습니다.")
                             .setAutoCancel(true)
                             .setSound(defaultSoundUri)
                             .setContentIntent(pendingIntent);

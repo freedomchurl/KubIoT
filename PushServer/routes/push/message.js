@@ -28,7 +28,7 @@ router.get('/getpushlist',function(req,res){
 	//			key가 2라면, 2번째 페이지. 페이지당 20개니까,
 				//(key-1)*20 ~ 20
 				//var startindex = (key-1)*20;
-					var exec = conn.query('select device.id dID, device.name dName,push_data.time, push_data.ischecked ischecked,push_data.id pushID from push_data inner join device where push_data.device=device.id',function(err,result){
+					var exec = conn.query('select device.id dID, device.name dName,push_data.time time, push_data.ischecked ischecked,push_data.id pushID from push_data inner join device where push_data.device=device.id',function(err,result){
 						conn.release();
 						
 						res.header("Access-Control-Allow-Headers","Authorization");

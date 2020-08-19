@@ -17,7 +17,7 @@ var pool = mysql.createPool({
 
 router.use(express.json());
 
-router.post('/deleteDeviceongroup', function (req, res) {
+router.get('/deleteDeviceongroup', function (req, res) {
 	var dID = req.query.dID;
 	console.log(req);
 	pool.getConnection(function (err, conn) {

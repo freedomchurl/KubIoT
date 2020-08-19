@@ -18,7 +18,7 @@ var pool = mysql.createPool({
 router.use(express.json());
 
 router.post('/addDeviceongroup', function (req, res) {
-	var name = req.body.gID;
+	var gID = req.body.gID;
 	var did = req.body.dID;
 	console.log(req);
 	pool.getConnection(function (err, conn) {

@@ -17,6 +17,49 @@ var pool = mysql.createPool({
 
 router.use(express.json());
 
+router.get('/control_device', function (req, res) {
+	var min = req.query.min;
+	var max =req.query.max;
+	var dID = req.query.dName;
+	console.log(req);
+	pool.getConnection(function (err, conn) {
+		if (err) {
+			if (conn) {
+				conn.release();
+			}
+			throw err;
+		}
+		//data = {id:id,pass:pwd};
+		//data = "id=" + id + " and " + "pass=" + pwd;
+		//	data = [memo,id];
+		data =[min, max,dID,min,max,dID];
+		var exec = conn.query('insert into control_device(min,max,deviceid) values(?,?,?) on duplicate key update min=?,max=?,deviceid=?',data,function (err, result) {
+			conn.release();
+			res.header("Access-Control-Allow-Headers", "Authorization");
+			res.header("Access-Control-Expose-Headers", "*");
+			if (err) {
+				res.send({ status: false });
+			}
+			else {
+				// console.log(result.length);
+				// console.log(result);	
+				// if(result.length == 1){
+				// 	res.send({status:true});
+				// }
+				// else{
+				// 	res.send({status:false});
+				// }
+				// update는 별다른 result가 없음
+					res.send({status:true})
+			}
+		});
+
+		
+
+	});
+});
+
+
 router.get('/deleteDeviceongroup', function (req, res) {
 	var dID = req.query.dID;
 	var gID =req.query.gID;

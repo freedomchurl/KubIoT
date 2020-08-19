@@ -42,7 +42,7 @@ router.get('/getgroupinfo',function(req,res){
 				console.log(result.length);
 				console.log(result);	
 				if(result.length >= 1){
-					res.send({status:true,payload:result[0]});
+					res.send({status:true,payload:result});
 				}
 				else{
 					res.send({status:true,payload:null});

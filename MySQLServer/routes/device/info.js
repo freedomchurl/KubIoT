@@ -32,7 +32,7 @@ router.post('/creategroup',function(req,res){
 		//data = {id:id,pass:pwd};
 		//data = "id=" + id + " and " + "pass=" + pwd;
 		//	data = [memo,id];
-		var exec = conn.query('insert into groupinfo(name) values(?); select last_insert_key() as gID',name,function(err,result){
+		var exec = conn.query('insert into groupinfo(name) values(?); select last_insert_id() as gID;',name,function(err,result){
 			//conn.release();
 			res.header("Access-Control-Allow-Headers","Authorization");
 			res.header("Access-Control-Expose-Headers","*");

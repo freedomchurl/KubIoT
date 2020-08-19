@@ -1,0 +1,31 @@
+   div{
+       border: 1px solid gold;
+       margin: 0 auto;
+       box-sizing: border-box;
+   }
+    
+    #sidebar{
+        float:left;
+        width: 15%;
+        height: 500px;
+    }
+    #content{
+        float:right;
+        width: 85%;
+        height:500px;
+    }
+    #footer{
+        clear:both;
+        align-content: center;
+    }
+    /*#content-buttons{
+        clear:both;
+    }*/
+    .text-center{
+        clear: both;
+    }
+    
+    #card-view{
+        clear:both;
+        height: 300px;
+    }

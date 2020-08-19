@@ -32,13 +32,14 @@ client.on("connect", () => {
 
 client.on('message', (topic, message, packet) => {
   // 메시지를 받았을 때.
+  console.log("I got "+message)
   message = message.toString("utf-8")
   message = JSON.parse(message)
   // 등록 정보 수정
   if(message.regi == "1"){
     console.log("register")
     regi = "1";
-  }
+  } else {
   // 그룹 등록
   if(message.status == "1"){
     console.log("status 1")
@@ -50,7 +51,7 @@ client.on('message', (topic, message, packet) => {
     groupList.append(name);
   }
   // 제어 실행.
-  control(message)
+  control(message.req) }
 })
 
 cron.schedule('*/2 * * * * *', function(){

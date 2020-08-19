@@ -7,6 +7,8 @@ import org.springframework.http.client.reactive.ClientHttpConnector;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.http.codec.ServerSentEvent;
 import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import reactor.core.publisher.Flux;
@@ -18,25 +20,25 @@ public class TestWebClientApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(TestWebClientApplication.class, args);
-		/*
-	    WebClient client = WebClient.create("http://localhost:8090");
+		
+	    WebClient client = WebClient.create("http://localhost:8087");
 	    ParameterizedTypeReference<ServerSentEvent<String>> type
 	     = new ParameterizedTypeReference<ServerSentEvent<String>>() {};
 	
 	     WebClient cl =  WebClient.builder()
-	    		    .baseUrl("http://localhost:8090")
+	    		    .baseUrl("http://localhost:8087?id=\'HTTPF01\'")
 	    		    .clientConnector((ClientHttpConnector) new ReactorClientHttpConnector(
                  HttpClient.create().followRedirect(true)
          ))
          .build();
 	     
 	     
-	    Flux<ServerSentEvent<String>> eventStream = cl.post()
-	      .uri("/sseTest").retrieve()
+	    Flux<ServerSentEvent<String>> eventStream = cl.get()
+	      .uri("/connect").retrieve()
 	      .bodyToFlux(type);
 	 
 	    eventStream.subscribe(System.out::println);
-*/
+
 	}
 
 }

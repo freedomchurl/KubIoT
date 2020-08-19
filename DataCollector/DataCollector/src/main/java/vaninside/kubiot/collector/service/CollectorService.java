@@ -57,12 +57,12 @@ public class CollectorService implements ICollectorService {
 
 	@Override
 	public boolean saveDoubleData(String deviceId, ArrayList<Double> data, ArrayList<String> time) {
-		System.out.println(1);
+		System.out.println("Save double data");
 		SimpleDateFormat format1 = new SimpleDateFormat ( "yyyyMMddmmss");
 		Date curtime = new Date();
 		String time1 = format1.format(curtime);	
 		String fileName = deviceId +"_" + time1;
-	
+	/*
 		File file = new File("./file/"+fileName+".csv");
 		
 		//csv 파일 생성
@@ -83,16 +83,16 @@ public class CollectorService implements ICollectorService {
 			SimpleDateFormat format2 = new SimpleDateFormat ( "yyyy-MM-dd");
 			Date curtime2 = new Date();
 			String time2 = format2.format(curtime2);
-			
+			*/
 			//dao.insertData("/"+time2, file);
 			dao.insertRedis(deviceId, data.get(0), time.get(0));
-		} catch (IllegalStateException e) {
+		/*} catch (IllegalStateException e) {
 			e.printStackTrace();
 			return false;
 		} catch (IOException e) {
 			e.printStackTrace();
 			return false;
-		}
+		}*/
 		return true;
 	}
 

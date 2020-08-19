@@ -132,7 +132,7 @@ public class CollectorDao implements ICollectorDao{
 	}
 	
 	public boolean insertRedis(String deviceId, Double data, String time) {
-		System.out.println(2);
+		System.out.println(555);
 		// Redis
 		ListOperations<String, Object> values = redisTemplate.opsForList();
 

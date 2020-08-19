@@ -141,10 +141,11 @@ public class CollectorController {
 		
 		// return json
 		HashMap<String, Object> hashMap = new HashMap<String, Object>();
-        hashMap.put("status", 0);
+        
         if(regi.equals("0")) {
-        	 hashMap.put("regi", result?"1":"0");
-        } else {
+        	hashMap.put("status", 2);
+        	 hashMap.put("regi", "1");
+        } else {hashMap.put("status", 0);
         	 hashMap.put("regi", "1");
         }
 		return hashMap;
@@ -177,15 +178,17 @@ public class CollectorController {
 			// image data
 			String data = str[1];
 			String time = (String) obj.get("time");
-			result = service.saveData(deviceId, dataType, data, time, regi, "MQTT");
+			result = service.saveData(deviceId, dataType, data, time, regi, "HTTP");
 		
 		
 		// return json
 		HashMap<String, Object> hashMap = new HashMap<String, Object>();
-        hashMap.put("status", 0);
+        
         if(regi.equals("0")) {
-       	 hashMap.put("regi", result?"1":"0");
+        	hashMap.put("status", 2);
+        	hashMap.put("regi", "1");
        } else {
+    	   hashMap.put("status", 0);
        	 hashMap.put("regi", "1");
        }
 		return hashMap;
@@ -231,7 +234,7 @@ public class CollectorController {
         //int status = result? 1:0;
         int status = 0;
         if(regi.equals("0")) {
-       	 hashMap.put("regi", result?"2":"0");
+       	 hashMap.put("regi", result?"1":"0");
        } else {
        	 hashMap.put("regi", "1");
        }

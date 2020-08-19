@@ -46,16 +46,18 @@ public class MainActivity extends AppCompatActivity {
                                         @Override
                                        public void onClick(View v) {
                                            try {
-                                               HttpUtil util = new HttpUtil("http://49.50.174.246:7878/push/message/getpushlist");
+                                               HttpUtil util = new HttpUtil("http://101.101.219.90:7878/push/message/getpushlist");
                                                String str = util.execute().get();
-                                               //Log.d("notice", str);
+                                               Log.d("notice", str);
 
                                                JSONObject obj = new JSONObject(str);
                                                JSONArray rs = (JSONArray)obj.get("payload");
 
                                                pushArray.clear();
                                                for(int i=0; i<rs.length(); i++){
-                                                   pushArray.add(rs.get(i).toString());
+                                                   JSONObject objj = new JSONObject(rs.get(i).toString());
+                                                   pushArray.add(objj.get("dName") + " 기기에서 이상을 감지하였습니다.");
+
                                                }
                                                mListAdapter.notifyDataSetChanged();
                                            }
@@ -78,7 +80,8 @@ public class MainActivity extends AppCompatActivity {
 
                                 String token = task.getResult().getToken();
 
-                                new HttpUtil("http://49.50.174.246:7878/push/tokenadd?token="+token).execute();
+                                new HttpUtil("http://101.101.219.90:7878/push/tokenadd?token="+token).execute();
+                                //new HttpUtil("http://101.101.219.90:7878/push/message/addpushlist").execute();
                                 Log.d("FCM LOG", "FCM 토큰" + token);
                                 //Toast.makeText(MainActivity.this, token, Toast.LENGTH_SHORT).show();
                             }

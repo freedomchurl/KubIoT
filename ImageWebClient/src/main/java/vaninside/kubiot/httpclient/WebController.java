@@ -128,6 +128,16 @@ public class WebController {
 		   // instance.subscribe(TOPIC+ID, 0);
 		    // 그룹 추가
 		    groupList.add((String)obj.get("name"));
+		  	} else if((obj.get("status").toString().equals("2"))){
+		  		// 등록 api 날리세요.
+		  		HttpHeaders headers = new HttpHeaders();
+				headers.setContentType(MediaType.APPLICATION_JSON);
+				RestTemplate restTemplate = new RestTemplate();
+//				headers.add("Content-Type", "multipart/form-data; boundary=----WebKitFormBoundary8UhbmC4vAvBxT6z3"); //multipart/form-data 있는 경우 사용.
+				HttpEntity<String> entity = new HttpEntity<>(null,headers);
+				String answer = restTemplate.getForObject("http://localhost:8090" + "?id="+ID, String.class);
+				System.out.println(answer);
+				receive(answer);
 		  	}
 		  // 제어 실행.
 		  // control();

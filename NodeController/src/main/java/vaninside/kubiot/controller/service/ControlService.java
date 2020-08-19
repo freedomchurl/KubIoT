@@ -2,6 +2,7 @@ package vaninside.kubiot.controller.service;
 
 import java.io.IOException;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -27,11 +28,12 @@ public class ControlService implements IControlService{
 	@Autowired
 	ControlDao dao;
 	
-	public static String topic = "topic2";
+	public static String topic = "topic";
 	private static final String MQTT_PUBLISHER_ID = "control-server";
-    private static final String MQTT_SERVER_ADDRES= "tcp://127.0.0.1:1883";
+    private static final String MQTT_SERVER_ADDRES= "tcp://101.101.219.90:1883";
     private static IMqttClient instance;
     private final CopyOnWriteArrayList<SseEmitter> emitters = new CopyOnWriteArrayList<>();
+    private final ArrayList<String> deviceList = new ArrayList<String>();
 	
     public ControlService() throws MqttException {
 		init();
@@ -65,6 +67,24 @@ public class ControlService implements IControlService{
 
 	@Override
 	public boolean HttpReq(String deviceId, String request) {
+		System.out.println("d "+deviceId);
+		System.out.println("f "+deviceList.get(0));
+		int index = 0;
+		for(int i=0; i<deviceList.size(); i++) {
+			if(deviceId.equals(deviceList.get(i))) {
+				index = i;
+				break;
+			}
+		}
+		
+		try {
+			emitters.get(index).send(request);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return false;
+		}
+		/*
 		for(SseEmitter emitter : emitters ) { 
             try {
                 emitter.send(request);
@@ -74,15 +94,20 @@ public class ControlService implements IControlService{
             	return false;
             }
         }
-		return false;
+        */
+        
+		
+		return saveLogFile(deviceId, request);
 	}
 
 	@Override
 	public boolean MqttReq(String deviceId, String request) {
 		
-        MqttMessage mqttMessage = new MqttMessage(request.getBytes());
+
         try {
-			instance.publish(topic, mqttMessage);
+        	String msg = new String("{\"req\":\""+request+"\"}");
+            MqttMessage mqttMessage = new MqttMessage(msg.getBytes());
+			instance.publish(topic+deviceId, mqttMessage);
             return saveLogFile(deviceId, request);
 		} catch (MqttPersistenceException e) {
 			e.printStackTrace();
@@ -94,9 +119,20 @@ public class ControlService implements IControlService{
 	}
 
 	@Override
-	public boolean GroupReq(String groupId, String protocol, String request) {
+	public boolean GroupReq(int groupId, String request) {
+		ArrayList<String> member= dao.getMember(groupId);
+		// List get member
 		
-		return false;
+		for(int i=0; i<member.size(); i++) {
+			System.out.println("a: "+member.get(i));
+			String thisType = dao.getType(member.get(i));
+			if(thisType.equals("HTTP")) {
+				HttpReq(member.get(i), request);
+			}else {
+				MqttReq(member.get(i), request);
+			}
+		}
+		return true;
 	}
 
 	@Override
@@ -105,10 +141,13 @@ public class ControlService implements IControlService{
 	}
 
 	@Override
-	public SseEmitter sseConnect() {
+	public SseEmitter sseConnect(String id) {
+		System.out.println("device add");
         final SseEmitter emitter = new SseEmitter();
         ExecutorService service = Executors.newSingleThreadExecutor();
         this.emitters.add(emitter); 
+        this.deviceList.add(id);
+        System.out.println("device LIst " + deviceList.size());
         emitter.onCompletion( new Runnable() { 	 
             public void run() {
                 emitters.remove(emitter); 
@@ -127,6 +166,23 @@ public class ControlService implements IControlService{
 			e.printStackTrace();
 		}
         return emitter;
+	}
+
+
+
+	public boolean createGroup(int groupId) {
+		// TODO Auto-generated method stub
+		String request = null;
+		ArrayList<String> member= dao.getMember(groupId);
+		for(int i=0; i<member.size(); i++) {
+			String thisType = dao.getType(member.get(i));
+			if(thisType.equals("HTTP")) {
+				HttpReq(member.get(i), request);
+			}else {
+				MqttReq(member.get(i), request);
+			}
+		}
+		return true;
 	}
 
 }

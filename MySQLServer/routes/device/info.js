@@ -41,7 +41,7 @@ router.get('/getgroupinfo',function(req,res){
 			else{
 				console.log(result.length);
 				console.log(result);	
-				if(result.length == 1){
+				if(result.length >= 1){
 					res.send({status:true,payload:result[0]});
 				}
 				else{

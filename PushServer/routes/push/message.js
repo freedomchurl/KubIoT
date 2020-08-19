@@ -28,7 +28,7 @@ router.get('/getpushlist',function(req,res){
 	//			key가 2라면, 2번째 페이지. 페이지당 20개니까,
 				//(key-1)*20 ~ 20
 				//var startindex = (key-1)*20;
-					var exec = conn.query('select message from pushlist',function(err,result){
+					var exec = conn.query('select * from push_data',function(err,result){
 						conn.release();
 						
 						res.header("Access-Control-Allow-Headers","Authorization");
@@ -43,12 +43,12 @@ router.get('/getpushlist',function(req,res){
 						//res.send({"value":["DEVICE 01 ERROR", "DEVICE 03 ERROR", "DEVICE 05 ERROR"]})
 						if(result.length){
 						console.log('Success');
-						var resultarray = [];
-						for(var i=0;i<result.length;i++)
-						{
-						    resultarray.push(result[i].message);
-						}
-						res.send({status:true,payload:resultarray});
+						// var resultarray = [];
+						// for(var i=0;i<result.length;i++)
+						// {
+						//     resultarray.push(result[i].message);
+						// }
+						res.send({status:true,payload:result});
 						}
 						else
 						{
@@ -64,7 +64,8 @@ router.get('/getpushlist',function(req,res){
 });
 
 router.post('/addpushlist',function(req,res){
-	var key = req.body.message;
+	var key = req.query.deviceID;
+	// device info.
 	pool.getConection(function(err,conn){
 		if(err){
 		    if(conn){
@@ -73,7 +74,7 @@ router.post('/addpushlist',function(req,res){
 			throw err;
 		    }
 
-		    var exec = conn.query('insert pushlist values(?)',key,function(err,result){
+		    var exec = conn.query('insert into push_data(device) values(?)',key,function(err,result){
 			    
 			    conn.release();
 			    

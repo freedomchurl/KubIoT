@@ -17,8 +17,50 @@ var pool = mysql.createPool({
 
 router.use(express.json());
 
+router.post('/getDeviceongroup', function (req, res) {
+	var gID = req.body.gID;
+	console.log(req);
+	pool.getConnection(function (err, conn) {
+		if (err) {
+			if (conn) {
+				conn.release();
+			}
+			throw err;
+		}
+		//data = {id:id,pass:pwd};
+		//data = "id=" + id + " and " + "pass=" + pwd;
+		//	data = [memo,id];
+		
+		var exec = conn.query('select device.id,device.name,device.time,device.protocol,device.type,device.location,device.memo from groupregi inner join device where device.id=groupregi.deviceid and groupregi.groupid=?',
+			function (err, result) {
+			conn.release();
+			res.header("Access-Control-Allow-Headers", "Authorization");
+			res.header("Access-Control-Expose-Headers", "*");
+			if (err) {
+				res.send({ status: false });
+			}
+			else {
+				// console.log(result.length);
+				// console.log(result);	
+				// if(result.length == 1){
+				// 	res.send({status:true});
+				// }
+				// else{
+				// 	res.send({status:false});
+				// }
+				// update는 별다른 result가 없음
+				res.send({ status: true }); // 성공했으면.
+			}
+		});
+
+		
+
+	});
+});
+
+
 router.post('/addDeviceongroup', function (req, res) {
-	var name = req.body.gID;
+	var gID = req.body.gID;
 	var did = req.body.dID;
 	console.log(req);
 	pool.getConnection(function (err, conn) {

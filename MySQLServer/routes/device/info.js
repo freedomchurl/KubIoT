@@ -30,7 +30,8 @@ router.get('/dnumpergroup',function(req,res){
 	//	data = "id=" + id + " and " + "pass=" + pwd;
 	//	data = [id, pwd];
 		// MySQL에서, 서버에 projectinfo가 있을 시, true를 return한다. 
-		var exec = conn.query('select count(*) as dnum, groupid from groupregi group by groupid',function(err,result){
+		var exec = conn.query('select count(*) as dnum,groupinfo.name as gName,groupinfo.id gID from groupinfo inner join groupregi where groupinfo.id=groupregi.groupid group by groupinfo.id',
+		function(err,result){
 			conn.release();
 			res.header("Access-Control-Allow-Headers","Authorization");
 			res.header("Access-Control-Expose-Headers","*");

@@ -10,7 +10,8 @@ user : 'root',
 password : 'dlcjf2779!',
 database : 'kubiot',
 debug : true,
-charset : 'utf8'
+charset : 'utf8',
+multipleStatements : true,
 });
 
 
@@ -50,11 +51,13 @@ router.post('/creategroup',function(req,res){
 				// }
 				// update는 별다른 result가 없음
 				//res.send({status:true}); // 성공했으면.
-				var gID = result[0].gID;
+				console.log(result[1]);
+				
+				var gID = result[1][0].gID;
 				var mult_query = '';
-				for(var i=0;i<dID.length;i++)
+				for(var i=0;i<did.length;i++)
 				{
-					mult_query += 'insert into groupregi(deviceid,groupid) values(' + gID + ',' + dID[i] + ');'
+					mult_query += 'insert into groupregi(deviceid,groupid) values(' + did[i]+ ',' + gID + ');'
 				}
 				var exec = conn.query(mult_query,function(err,result){
 					conn.release();

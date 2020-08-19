@@ -33,10 +33,10 @@ router.post('/', function (req, res) {
 			}
 			throw err;
 		}
-
+		console.log(did + ' ' + message);
 		var exec = conn.query('insert into push_data(device) values(?)', did, function (err, result) {
 
-			conn.release();
+			//conn.release();
 
 			if (err) {
 				res.send({ status: false });

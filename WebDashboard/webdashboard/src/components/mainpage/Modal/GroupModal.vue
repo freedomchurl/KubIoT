@@ -1,15 +1,9 @@
 <template>
     <div id="scroll-box" class="container">
-        <div id="title-box">장치 관리 및 제어 전송</div>
-        <div id="memobox">
-            <!-- {{device_info}} -->
-            <span>메모 : </span>
-            <textarea v-model="device_memo" v-bind:placeholder="place_device"></textarea>
-        </div>
-        <input class="btn btn-primary col-md-3" @click="modify_memo" type="button" value="메모 수정">
+        <div id="title-box">그룹 제어 전송</div>
     
         <div id="device-control-box">
-            <span>제어 쿼리 : </span>
+            <span>제어 쿼리 :</span>
             <textarea v-model="control_data" v-bind:placeholder="place_device"></textarea>
         </div>
         <input id="control-btn" class="btn btn-primary col-md-3" @click="send_control" type="button" value="제어 전송">
@@ -34,19 +28,20 @@ export default {
     
   data:function(){
       return {
+          groupinfo:this.group_info,
           control_data:'',
-          device:this.device_info,
-          device_memo:this.device_info.memo,
-          place_device:this.device_info.memo,
+        //   device:this.device_info,
+        //   device_memo:this.device_info.memo,
+        //   place_device:this.device_info.memo,
       }
   },props : [
-      'device_info',
+      'group_info',
   ],methods : {
       send_control(){
           var vm = this;
           //JSON {deviceId, protocol, request} 모두 String 타입.
-          axios.post("http://" + '192.168.0.29'+ ":8083/control", {
-              deviceId:vm.device.name , protocol:vm.device.protocol, request:vm.control_data,
+          axios.post("http://" + IP.IP + ":8083/group-control", {
+              groupId:vm.groupinfo.id , request:vm.control_data,
             })
             .then((res) => {
               console.log(res.status + 'aaa');

@@ -3,34 +3,31 @@
     <!-- <DeviceModalVue/> -->
     <!-- <modals-container /> -->
     <div id="menuname">
-      <span id="title">장치 리스트</span>
+      <span id="title">장치 그룹 관리 - 그룹 {{groupinfo.name}}</span>
     </div>
     <div id="current-state">
       <div id="total-device">
-        <div id="state-name">총 장치 수</div>
+        <div id="state-name">그룹 내 장치 수</div>
         <div id="state-value">
-          {{totalDevice}}
+          {{groupinfo.dNum}}
           <span id="amount">대</span>
         </div>
       </div>
-      <div class="vl"></div>
+      <!-- <div class="vl"></div>
       <div id="total-group">
         <div id="state-name">총 그룹 수</div>
         <div id="state-value">
           {{totalGroup}}
           <span id="amount">그룹</span>
         </div>
-      </div>
-      <div class="vl"></div>
-      <div id="abnormal-device">
-        <div id="state-name">이상 감지 장치 수</div>
-        <div id="state-value">
-          {{abnormalDevice}}
-          <span id="amount">대</span>
-        </div>
-      </div>
+      </div> -->
+      
     </div>
     <div>
+        <div id="top-box"><div id="title-list">멤버 리스트</div>
+        <div id="right-buttons">
+        <button v-on:click="controlGroup" id="add-button" class="btn btn-primary">제어</button>
+        <button v-on:click="addDevice" id="add-button" class="btn btn-primary">장치 추가</button></div></div>
       <table class="table table-hover">
         <thead>
           <tr>
@@ -52,28 +49,30 @@
             <td>{{data.type}}</td>
             <td>{{data.time}}</td>
             <td>
-              <button v-on:click="selectDevice(index)" class="btn btn-primary">관리</button>
+              <button v-on:click="deleteDevice(index)" class="btn btn-warning">제거</button>
             </td>
           </tr>
         </tbody>
       </table>
     </div>
-  </div>
+    </div>
 </template>
 
 <script>
 import { EventBus } from "../../utils/event-bus.js";
 import axios from "axios";
 import IP from "../../../static/IP.json";
-import DeviceModal from "./Modal/DeviceModal.vue";
+import AddDeviceModal from "./Modal/AddDeviceModal.vue";
+import GroupModal from './Modal/GroupModal.vue';
 
 export default {
   components:{
     // 'DeviceModalVue':DeviceModal
   },
-  props: ["propsdata"],
+  props: ["gInfo"],
   data() {
     return {
+        groupinfo:this.gInfo,
       testDataset: [
         { deviceid: "지민아", memo: "철오빠가 사랑해", location: "" },
         { deviceid: "지민아", memo: "많이많이 사랑해", location: "" },
@@ -87,29 +86,85 @@ export default {
     };
   },
   methods: {
-    LoadData(){
+    testFN3(){
+      console.log("WOW!!!! HARD - finish");
+    },
+    testFN23(){
+      console.log("WOW!!!! HARD");
+      this.LoadData();
+    },
+    doc_del_rendar2() {
+      
+      this.$modal.show(
+        GroupModal,
+        {
+          group_info: this.groupinfo,
+          modal: this.$modal,
+        },
+        {
+          name: "dynamic-modal",
+          width: "800px",
+          height: "600px",
+          draggable: false,
+        },{
+          'closed':this.testFN3,
+          'before-close':this.testFN23,
+        }
+      );
+    },
+    controlGroup(){
+      this.doc_del_rendar2()
+      // var vm = this;
+      //     //JSON {deviceId, protocol, request} 모두 String 타입.
+      //     axios.post("http://" + '192.168.0.29'+ ":8083/control", {
+      //         groupId:vm.groupinfo.id , request:vm.control_data,
+      //       })
+      //       .then((res) => {
+      //         console.log(res.status + 'aaa');
+      //         if(res.status==200)
+      //         {
+      //             vm.$emit("close");
+      //         }
+      //       });
+    },
+    deleteDevice(index){
       var vm = this;
-    axios
-      .get("http://" + IP.IP + ":7878/push/message/getpushnum")
+      axios
+      .get("http://" + IP.IP + ":7676/device/info/deleteDeviceongroup",{
+          params: { dID: vm.dataset[index].id },
+          timeout: 1000, // 1초 이내에 응답이 없으면 에러 처리
+        })
       .then((res) => {
         console.log(res.data);
 
         //   vm.totalGroup = res.data.payload.gnum;
         if (res.data.status == true) {
-          vm.abnormalDevice = res.data.payload.pushnum;
+          vm.LoadData(); // 재 로드.
         }
       });
-    axios.get("http://" + IP.IP + ":7676/device/info/devicenum").then((res) => {
-      console.log(res.data);
+    },
+    LoadData(){
+      var vm = this;
+    // axios
+    //   .get("http://" + IP.IP + ":7878/push/message/getpushnum")
+    //   .then((res) => {
+    //     console.log(res.data);
 
-      vm.totalDevice = res.data.payload.dnum;
-    });
-    axios.get("http://" + IP.IP + ":7676/device/info/groupnum").then((res) => {
-      console.log(res.data);
+    //     //   vm.totalGroup = res.data.payload.gnum;
+    //     if (res.data.status == true) {
+    //       vm.abnormalDevice = res.data.payload.pushnum;
+    //     }
+    //   });
+    // axios.get("http://" + IP.IP + ":7676/device/info/devicenum").then((res) => {
+    //   console.log(res.data);
 
-      vm.totalGroup = res.data.payload.gnum;
-    });
-    
+    //   vm.totalDevice = res.data.payload.dnum;
+    // });
+    // axios.get("http://" + IP.IP + ":7676/device/info/groupnum").then((res) => {
+    //   console.log(res.data);
+
+    //   vm.totalGroup = res.data.payload.gnum;
+    // });
     EventBus.$on("update-list", function () {
       console.log("aaaprint");
       axios
@@ -124,18 +179,52 @@ export default {
         });
     });
 
-    axios
-      .get("http://" + IP.IP + ":7676/device/info", {
-        params: { pageinfo: 1 },
-        timeout: 10000, // 1초 이내에 응답이 없으면 에러 처리
-      })
-      .then((res) => {
-        console.log(res.data);
+    // axios
+    //   .get("http://" + IP.IP + ":7676/device/info", {
+    //     params: { pageinfo: 1 },
+    //     timeout: 1000, // 1초 이내에 응답이 없으면 에러 처리
+    //   })
+    //   .then((res) => {
+    //     console.log(res.data);
 
-        this.dataset = res.data.payload;
-      });
+    //     this.dataset = res.data.payload;
+    //   });
 
+      axios
+            .get("http://" + IP.IP + ":7676/device/info/dnumpergroup")
+            .then((res) => {
+              console.log(res.data);
+
+              //vm.totalGroup = res.data.payload.gnum;
+
+              if (res.data.payload == null) console.log("지민바보");
+
+              if (res.data.payload != null) {
+                for (let i = 0; i < res.data.payload.length; i++) {
+                  //console.log(res.data.payload[i].gID-1);
+                    if(vm.groupinfo.id == res.data.payload[i].gID)
+                      vm.groupinfo.dNum = res.data.payload[i].dnum;
+                  
+                }
+              }
+            });
+
+      axios.post("http://" + IP.IP + ":7676/device/info/getDeviceongroup", {
+              gID:vm.groupinfo.id,
+            })
+            .then((res) => {
+              console.log(res.data);
+              
+              if(res.data.status ==true)
+              {
+                vm.dataset = res.data.payload;
+              }
+
+            });
     // totalDevice, totalGroup, abnormalDevice 를 가져와야함
+    },
+    addDevice(){
+        this.doc_del_rendar();
     },
     selectDevice(index) {
       console.log(index + " " + "device selected");
@@ -148,12 +237,12 @@ export default {
       console.log("WOW!!!! HARD");
       this.LoadData();
     },
-    doc_del_rendar(index) {
+    doc_del_rendar() {
       
       this.$modal.show(
-        DeviceModal,
+        AddDeviceModal,
         {
-          device_info: this.dataset[index],
+          group_info: this.groupinfo,
           modal: this.$modal,
         },
         {
@@ -187,6 +276,21 @@ export default {
 </script>
 
 <style scoped>
+#right-buttons{
+  padding: 0.5rem 2rem 0.5rem 0rem;
+  width:20%
+}
+#add-button{
+    margin: 0rem 1rem 0rem 0rem;
+    width: 50%;
+}
+#title-list{
+    text-align: left;
+    font-weight: bold;
+    color:rgb(85, 107, 122);
+    font-size: 1.5rem;
+    margin:1rem 0rem 0.5rem 1rem ;
+}
 div#state-value {
   color: rgb(85, 107, 122);
   font-size: 3rem;
@@ -203,7 +307,11 @@ div#state-value {
   border-left: 1px solid rgb(70, 70, 70);
   height: 80%;
 }
-
+#top-box{
+    display: flex;
+    align-content: center;
+    justify-content: space-between;
+}
 div {
   width: inherit;
   white-space: nowrap;

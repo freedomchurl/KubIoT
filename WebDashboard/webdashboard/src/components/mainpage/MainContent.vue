@@ -11,7 +11,7 @@ import {EventBus} from '../../utils/event-bus.js'
 //import {EventBus2} from '../../utils/event-bus.js'
 import router from '../../router/index.js'
 // const routespath = ['/list','/analytic','/group','/admin'];
-const routesname = ['list','analytic','group','admin','push'];
+const routesname = ['list','analytic','group','admin','push','groupdetail'];
 
 export default {
     data(){
@@ -25,14 +25,17 @@ export default {
     created(){
         console.log('Test here');
         var vm = this;
-        EventBus.$on("click-sidemenu",function(index,name,ID){
+        EventBus.$on("click-sidemenu",function(index,name,ID,GID){
             console.log("Event!!" + name);
             //this.currentindex = index;
             vm.menuname = name;
             console.log("ID를 받았다 : " + ID);
             //this.setName(name);
             //router.push('/main' + routespath[index]);
-            router.push({name:routesname[index],params:{admin_id:ID}}).catch(()=>{});
+            if(index!=5)
+                router.push({name:routesname[index],params:{admin_id:ID}}).catch(()=>{});
+            else
+                router.push({name:routesname[index],params:{admin_id:ID,group_id:GID}}).catch(()=>{});
             // Redirect 가 안됨.
             //this.selectContent(index);
         });

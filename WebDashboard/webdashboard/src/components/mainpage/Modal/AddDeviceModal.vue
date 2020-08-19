@@ -1,11 +1,7 @@
 <template>
   <div id="scroll-box" class="container">
-    <div id="title-box">그룹 생성</div>
-    <div id="memobox">
-      <!-- {{device_info}} -->
-      <span>그룹 이름 :</span>
-      <textarea v-model="groupname" placeholder="생성할 그룹명을 입력하세요."></textarea>
-    </div>
+    <div id="title-box">그룹 내 장치 추가</div>
+    
     <!-- <input class="btn btn-primary col-md-3" @click="del_data" type="button" value="메모 수정"> -->
 
     <div id="device-control-box">
@@ -68,7 +64,7 @@ export default {
     //   device: this.device_info,
     //   device_memo: this.device_info.memo,
     //   place_device: this.device_info.memo,
-        groupname:'',
+        groupInfo:this.group_info,
       textinput: "form-control",
       dataset:[{name:'ss'},{name:'dd'}],
       selected:'',
@@ -89,7 +85,7 @@ export default {
         vm.dataset = res.data.payload;
       });
   },
-  props: ["device_info"],
+  props: ["group_info"],
   methods: {
       groupCreate(){
         var did = [];
@@ -99,8 +95,8 @@ export default {
         }
         //var gName = this.groupname;
         var vm=this;
-        axios.post("http://" + IP.IP + ":7676/device/info/creategroup", {
-              gName:vm.groupname , dID:did,
+        axios.post("http://" + IP.IP + ":7676/device/info/addDeviceongroup", {
+              gID:vm.groupInfo.id , dID:did,
             })
             .then((res) => {
               console.log(res.status + 'aaa');

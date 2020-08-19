@@ -52,7 +52,7 @@
 </template>
 
 <script>
-// import { EventBus } from "../../utils/event-bus.js";
+//import { EventBus } from "../../utils/event-bus.js";
 //import router from '../../router/index.js'
 //const routespath = ['/list','/analytic','/group','/admin'];
 import axios from "axios";
@@ -75,47 +75,8 @@ export default {
       console.log("그룹추가");
       this.doc_del_rendar()
     },
-    doc_del_rendar() {
-      this.$modal.show(
-        AddGroupModalVue,
-        {
-          //device_info: this.dataset[index],
-          modal: this.$modal,
-        },
-        {
-          name: "dynamic-modal",
-          width: "800px",
-          height: "600px",
-          draggable: false,
-        },
-        {
-          closed: this.testFN,
-          "before-close": this.testFN2,
-        }
-      );
-    },
-    testFN(){
-      console.log("WOW!!!! HARD - finish");
-    },
-    testFN2(){
-      console.log("WOW!!!! HARD");
-    },
-    groupselect(index) {
-      console.log(index);
-    },
-    clicklist() {
-      console.log("Click List");
-      //EventBus.$emit("click-sidemenu",input,this.menulist[input]); // index를 넘겨준다.
-    },
-    clickcard() {
-      console.log("Click Card");
-    },
-  },
-  mounted() {
-    console.log("Mounted");
-  },
-  created() {
-    var vm = this;
+    LoadData(){
+      var vm = this;
 
     axios
       .get("http://" + IP.IP + ":7878/push/message/getpushnum")
@@ -171,6 +132,53 @@ export default {
             });
         });
     });
+    },
+    doc_del_rendar() {
+      this.$modal.show(
+        AddGroupModalVue,
+        {
+          //device_info: this.dataset[index],
+          modal: this.$modal,
+        },
+        {
+          name: "dynamic-modal",
+          width: "800px",
+          height: "600px",
+          draggable: false,
+        },
+        {
+          closed: this.testFN,
+          "before-close": this.testFN2,
+        }
+      );
+    },
+    testFN(){
+      console.log("WOW!!!! HARD - finish");
+    },
+    testFN2(){
+      console.log("WOW!!!! HARD");
+      this.LoadData();
+    },
+    groupselect(index) {
+      console.log(index);
+      //var vm= this;
+      //EventBus.$emit("click-sidemenu",5,'','',vm.groups[index]);
+      this.$router.push({name:'groupdetail',params:{gInfo: this.groups[index]}}).catch(()=>{});
+      //router.push({name:routesname[index],params:{admin_id:ID}}).catch(()=>{});
+    },
+    clicklist() {
+      console.log("Click List");
+      //EventBus.$emit("click-sidemenu",input,this.menulist[input]); // index를 넘겨준다.
+    },
+    clickcard() {
+      console.log("Click Card");
+    },
+  },
+  mounted() {
+    console.log("Mounted");
+  },
+  created() {
+    this.LoadData();
     // 그룹별 device의 수를 가져오는 역할
 
     // EventBus.$on("update-list", function () {

@@ -14,6 +14,7 @@ import MenuAnalytic from '../components/mainpage/MainAnalytic.vue'
 import MenuGroup from '../components/mainpage/MainGroup.vue'
 //import indexPage from '../App.vue'
 import MenuPush from '../components/mainpage/MainPush.vue'
+import MenuGroupDetail from '../components/mainpage/MainGroupDetail.vue'
 
 Vue.use(VueRouter)
 
@@ -36,12 +37,18 @@ const route = [
       component:LoginPage,
       name:'login'
     },
+    
     {
       path:'/main',
       component:MainPage,
       name:'main',
       props:true,
       children:[
+        {path:'groupdetail',
+    name:'groupdetail',
+    component:MenuGroupDetail,
+    props:true,
+  },
         {
           path:'list',
           name:'list',
@@ -61,7 +68,10 @@ const route = [
         {
           path:'group',
           name:'group',
-          component:MenuGroup
+          component:MenuGroup,
+          children:[
+            
+          ]
         },
         {
           path:'push',

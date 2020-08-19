@@ -16,6 +16,7 @@ charset : 'utf8'
 
 router.use(express.json());
 router.get('/checkpush',function(req,res){
+	var value = req.query.ischecked;
 	var key = req.query.pushID;
 	//var key = req.query.token;
 	pool.getConnection(function(err,conn){
@@ -28,7 +29,8 @@ router.get('/checkpush',function(req,res){
 //			key가 2라면, 2번째 페이지. 페이지당 20개니까,
 			//(key-1)*20 ~ 20
 			//var startindex = (key-1)*20;
-				var exec = conn.query('update push_data set ischecked=1 where id=?',key,function(err,result){
+			data = [value, key];
+				var exec = conn.query('update push_data set ischecked=? where id=?',data,function(err,result){
 					conn.release();
 					
 					res.header("Access-Control-Allow-Headers","Authorization");

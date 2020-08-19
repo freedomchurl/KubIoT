@@ -16,6 +16,7 @@ app.use(express.json());
 app.use('/device',DeviceRoutes);
 app.use('/project',ProjectRoutes);
 
+
 app.listen(port,function(){
 	console.log('connected');
 });

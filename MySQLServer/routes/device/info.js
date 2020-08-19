@@ -2,6 +2,8 @@ var express = require('express');
 var router = express.Router();
 var mysql = require('mysql');
 var cors = require('cors');
+var redis = require('redis');
+const client = redis.createClient({port:6379,host:'101.101.219.90',password:'dlcjf2779!'})
 
 var pool = mysql.createPool({
 	connectionLimit: 20,
@@ -16,6 +18,26 @@ var pool = mysql.createPool({
 
 
 router.use(express.json());
+
+router.get('/getliveData', function (req, res) {
+	var dID = req.query.dName;
+	console.log(req);
+
+	const multi = client.multi();
+	multi.lrange(dID+":input:data",0,-1)
+	multi.lrange(dID+":input:time",0,-1)
+
+	multi.exec(function(err,result){
+		if(err){
+			res.send({status:false});
+		}
+		else{
+			res.send({status:true,payload:result});
+		}
+	});
+	
+});
+
 
 router.get('/control_device', function (req, res) {
 	var min = req.query.min;

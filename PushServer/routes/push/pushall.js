@@ -42,8 +42,8 @@ router.post('/', function (req, res) {
 				res.send({ status: false });
 			}
 			else {
-				res.send({ status: true });
-			}
+				//res.send({ status: true });
+			
 
 
 			var exec = conn.query('select  * from fcmtoken', function (err, result) {
@@ -69,6 +69,7 @@ router.post('/', function (req, res) {
 
 				}
 			});
+		}
 		});
 
 

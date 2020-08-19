@@ -19,7 +19,7 @@ import vaninside.kubiot.controller.service.ControlService;
 
 @RestController
 @SpringBootApplication
-@CrossOrigin(origins = {"http://localhost:8080", "http://101.101.219.90:8080"})
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class ControlController {
 
 	@Autowired

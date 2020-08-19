@@ -19,6 +19,7 @@ router.use(express.json());
 
 router.get('/deleteDeviceongroup', function (req, res) {
 	var dID = req.query.dID;
+	var gID =req.query.gID;
 	console.log(req);
 	pool.getConnection(function (err, conn) {
 		if (err) {
@@ -30,8 +31,8 @@ router.get('/deleteDeviceongroup', function (req, res) {
 		//data = {id:id,pass:pwd};
 		//data = "id=" + id + " and " + "pass=" + pwd;
 		//	data = [memo,id];
-		
-		var exec = conn.query('delete from groupregi where deviceid=?',dID,function (err, result) {
+		data =[dID, gID];
+		var exec = conn.query('delete from groupregi where deviceid=? and groupid=?',data,function (err, result) {
 			conn.release();
 			res.header("Access-Control-Allow-Headers", "Authorization");
 			res.header("Access-Control-Expose-Headers", "*");

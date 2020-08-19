@@ -15,6 +15,48 @@ charset : 'utf8'
 
 
 router.use(express.json());
+
+router.post('/memochange',function(req,res){
+	var id = req.body.deviceID;
+	var memo = req.body.memo;
+	console.log(req);
+	pool.getConnection(function(err,conn){
+		if(err){
+			if(conn){
+				conn.release();
+			}
+			throw err;
+		}
+		//data = {id:id,pass:pwd};
+		data = "id=" + id + " and " + "pass=" + pwd;
+		data = [memo,id];
+		var exec = conn.query('update device set memo=? where id=?',data,function(err,result){
+			conn.release();
+			res.header("Access-Control-Allow-Headers","Authorization");
+			res.header("Access-Control-Expose-Headers","*");
+			if(err){
+				res.send({status:false});
+			}
+			else{
+				// console.log(result.length);
+				// console.log(result);	
+				// if(result.length == 1){
+				// 	res.send({status:true});
+				// }
+				// else{
+				// 	res.send({status:false});
+				// }
+				// update는 별다른 result가 없음
+				res.send({status:true});
+			}
+		});
+
+		
+
+	});
+});
+
+
 router.get('/getgroupinfo',function(req,res){
 	//var id = req.body.adminid;
 	//var pwd = req.body.adminpwd;

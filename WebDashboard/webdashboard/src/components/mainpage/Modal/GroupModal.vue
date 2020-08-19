@@ -4,7 +4,7 @@
     
         <div id="device-control-box">
             <span>제어 쿼리 :</span>
-            <textarea v-model="control_data" v-bind:placeholder="place_device"></textarea>
+            <textarea v-model="control_data"></textarea>
         </div>
         <input id="control-btn" class="btn btn-primary col-md-3" @click="send_control" type="button" value="제어 전송">
     
@@ -40,10 +40,12 @@ export default {
       send_control(){
           var vm = this;
           //JSON {deviceId, protocol, request} 모두 String 타입.
+          console.log(vm.groupinfo.id + ' ' + vm.control_data);
           axios.post("http://" + IP.IP + ":8083/group-control", {
               groupId:vm.groupinfo.id , request:vm.control_data,
             })
             .then((res) => {
+                console.log(res);
               console.log(res.status + 'aaa');
               if(res.status==200)
               {

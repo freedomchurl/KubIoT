@@ -131,16 +131,16 @@ export default {
       var vm = this;
       axios
       .get("http://" + IP.IP + ":7676/device/info/deleteDeviceongroup",{
-          params: { dID: vm.dataset[index].id },
-          timeout: 1000, // 1초 이내에 응답이 없으면 에러 처리
+          params: { dID: vm.dataset[index].id , gID: vm.groupinfo.id},
+          timeout: 10000, // 1초 이내에 응답이 없으면 에러 처리
         })
       .then((res) => {
         console.log(res.data);
 
         //   vm.totalGroup = res.data.payload.gnum;
-        if (res.data.status == true) {
+        //if (res.data.status == true) {
           vm.LoadData(); // 재 로드.
-        }
+        
       });
     },
     LoadData(){

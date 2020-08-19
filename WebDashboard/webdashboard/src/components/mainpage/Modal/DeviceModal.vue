@@ -45,10 +45,12 @@ export default {
       send_control(){
           var vm = this;
           //JSON {deviceId, protocol, request} 모두 String 타입.
-          axios.post("http://" + '192.168.0.29'+ ":8083/control", {
+            console.log(vm.device.name + ' ' + vm.device.protocol + ' ' + vm.control_data);
+          axios.post("http://" + IP.IP+ ":8083/control", {
               deviceId:vm.device.name , protocol:vm.device.protocol, request:vm.control_data,
             })
             .then((res) => {
+                console.log(res);
               console.log(res.status + 'aaa');
               if(res.status==200)
               {

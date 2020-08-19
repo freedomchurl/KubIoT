@@ -148,8 +148,8 @@ router.get('/getpushlist',function(req,res){
 
 });
 
-router.post('/addpushlist',function(req,res){
-	var key = req.query.deviceID;
+router.get('/addpushlist',function(req,res){
+	var key = req.query.deviceID;	
 	// device info.
 	pool.getConection(function(err,conn){
 		if(err){

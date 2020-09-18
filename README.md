@@ -60,7 +60,7 @@ ___
 
 2) Go to FinalKubiot
 
-3)`` docker build -t "container name"``
+3) `` docker build -t "container name"``
 
 > container name 예시 : dockerFile 을 보고, controllerFile 인 경우 이미지 네임은 controller
 
@@ -82,9 +82,9 @@ ___
 
 ``docker-compose down``
 
-6) 웹페이지 접속 : "서버IP" PORT 7676 번 포트.
+7) 웹페이지 접속 : "서버IP" PORT 7676 번 포트.
 
-7) 테스트 클라이언트
+8) 테스트 클라이언트
 
 ​	-  HTTP 이미지 : ImageWebClient ( Run with spring boot )
 
@@ -93,7 +93,7 @@ ___
     -  MQTT 실수형 : TestMQTTClient 폴더에서 node floatMQTTClient.js
     -  안드로이드 : KubIoTAndroid 폴더 ( 안드로이드 스튜디오 프로젝트 )
 
-8) HTTP 프로토콜
+9) HTTP 프로토콜
 
 ( {} 로 표시된 부분은 JSON 데이터를 의미 )
 
@@ -107,7 +107,7 @@ ___
 
 
 
-  9) MQTT 프로토콜
+  10) MQTT 프로토콜
 
   \-   실수형 : JSON {deviceId, type, regi, data 배열, time 배열}
 

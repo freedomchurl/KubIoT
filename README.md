@@ -5,7 +5,7 @@
 
 "대규모 IoT 네트워크 통합 플랫폼 : Industry 4.0 과 IIoT 를 위한 인프라 구축"을 진행합니다.
 
-자세한 설명은 PPT를 참고해주세요.
+자세한 설명은 [PPT] (https://github.com/freedomchurl/KubIoT/blob/master/%EB%8C%80%EA%B7%9C%EB%AA%A8_IoT_%EB%84%A4%ED%8A%B8%EC%9B%8C%ED%81%AC_%ED%86%B5%ED%95%A9%ED%94%8C%EB%9E%AB%ED%8F%BC_%EB%B0%9C%ED%91%9C%EC%9E%90%EB%A3%8C.pptx)를 참고해주세요.
 
 
 
@@ -44,7 +44,7 @@
 
   
 
-![그림1](C:\Users\JIMIN\Desktop\그림1.png)
+![대시보드](https://github.com/freedomchurl/KubIoT/blob/master/%EB%8C%80%EC%8B%9C%EB%B3%B4%EB%93%9C%EC%9D%B4%EB%AF%B8%EC%A7%80.png)
 
 ___
 
@@ -126,4 +126,4 @@ ___
 * 각각의 서비스가 마이크로 서비스로 구성된 MSA 구조.
 * 각각의 서비스를 Docker를 이용하여 컨테이너화 하였습니다.
 
-![전체구조](C:\Users\JIMIN\Desktop\전체구조.PNG)
+![전체구조](https://github.com/freedomchurl/KubIoT/blob/master/%EC%A0%84%EC%B2%B4%EA%B5%AC%EC%A1%B0.PNG)

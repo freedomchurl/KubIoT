@@ -5,7 +5,7 @@
 
 "대규모 IoT 네트워크 통합 플랫폼 : Industry 4.0 과 IIoT 를 위한 인프라 구축"을 진행합니다.
 
-자세한 설명은 [PPT] (https://github.com/freedomchurl/KubIoT/blob/master/%EB%8C%80%EA%B7%9C%EB%AA%A8_IoT_%EB%84%A4%ED%8A%B8%EC%9B%8C%ED%81%AC_%ED%86%B5%ED%95%A9%ED%94%8C%EB%9E%AB%ED%8F%BC_%EB%B0%9C%ED%91%9C%EC%9E%90%EB%A3%8C.pptx)를 참고해주세요.
+자세한 설명은 [PPT](https://github.com/freedomchurl/KubIoT/blob/master/%EB%8C%80%EA%B7%9C%EB%AA%A8_IoT_%EB%84%A4%ED%8A%B8%EC%9B%8C%ED%81%AC_%ED%86%B5%ED%95%A9%ED%94%8C%EB%9E%AB%ED%8F%BC_%EB%B0%9C%ED%91%9C%EC%9E%90%EB%A3%8C.pptx)를 참고해주세요.
 
 
 

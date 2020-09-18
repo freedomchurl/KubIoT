@@ -63,7 +63,7 @@ public class CollectorService implements ICollectorService {
 		String time1 = format1.format(curtime);	
 		String fileName = deviceId +"_" + time1;
 
-		File file = new File(".\\file\\"+fileName+".csv");
+		File file = new File(fileName+".csv");
 		
 		//csv 파일 생성
 		try { 
@@ -84,7 +84,7 @@ public class CollectorService implements ICollectorService {
 			Date curtime2 = new Date();
 			String time2 = format2.format(curtime2);
 			
-			dao.insertData("\\"+time2, file);
+			dao.insertData("/"+time2, file);
 			dao.insertRedis(deviceId, data.get(0), time.get(0));
 		} catch (IllegalStateException e) {
 			e.printStackTrace();
@@ -108,9 +108,9 @@ public class CollectorService implements ICollectorService {
 
 		System.out.println(3);
 		if(str.length >= 2)
-			file = new File(".\\file\\"+fileName+"."+str[1]);
+			file = new File(fileName+"."+str[1]);
 		else
-			file = new File(".\\file\\"+fileName);
+			file = new File(fileName);
 		
 		try {
 			FileOutputStream fOut = new FileOutputStream( file ); 
@@ -125,7 +125,7 @@ public class CollectorService implements ICollectorService {
 			Date curtime2 = new Date();
 			String time2 = format2.format(curtime2);
 			
-			dao.insertData("\\"+time2, file);
+			dao.insertData("/"+time2, file);
 			
 		} catch (IllegalStateException e) {
 			e.printStackTrace();
@@ -145,7 +145,7 @@ public class CollectorService implements ICollectorService {
 		
 		String fileName = deviceId +"_" + time1;
 		
-		File file = new File(".\\file\\"+fileName+"."+FilenameUtils.getExtension(data.getOriginalFilename()));
+		File file = new File(fileName+"."+FilenameUtils.getExtension(data.getOriginalFilename()));
 		
 		try {
 			FileOutputStream fOut = new FileOutputStream( file ); 
@@ -160,7 +160,7 @@ public class CollectorService implements ICollectorService {
 			Date curtime2 = new Date();
 			String time2 = format2.format(curtime2);
 			
-			dao.insertData("\\"+time2, file);
+			dao.insertData("/"+time2, file);
 			
 		} catch (IllegalStateException e) {
 			e.printStackTrace();

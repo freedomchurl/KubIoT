@@ -71,6 +71,7 @@ public class ControlService implements IControlService{
 	public boolean HttpReq(String deviceId, String request) {
 		System.out.println("d "+deviceId);
 		System.out.println("f "+deviceList.get(0));
+		/*
 		int index = 0;
 		for(int i=0; i<deviceList.size(); i++) {
 			if(deviceId.equals(deviceList.get(i))) {
@@ -85,8 +86,8 @@ public class ControlService implements IControlService{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return false;
-		}
-		/*
+		}*/
+		
 		for(SseEmitter emitter : emitters ) { 
             try {
                 emitter.send(request);
@@ -96,7 +97,7 @@ public class ControlService implements IControlService{
             	return false;
             }
         }
-        */
+        
         
 		
 		return saveLogFile(deviceId, request);
@@ -145,7 +146,8 @@ public class ControlService implements IControlService{
 	@Override
 	public SseEmitter sseConnect(String id) {
 		System.out.println("device add");
-        final SseEmitter emitter = new SseEmitter();
+        final SseEmitter emitter = new SseEmitter((long) 30000000);
+        //emitter.
         ExecutorService service = Executors.newSingleThreadExecutor();
         this.emitters.add(emitter); 
         this.deviceList.add(id);
@@ -153,12 +155,14 @@ public class ControlService implements IControlService{
         emitter.onCompletion( new Runnable() { 	 
             public void run() {
                 emitters.remove(emitter); 
+                System.out.println("remove complete");
             }
         }); 
  
         emitter.onTimeout( new Runnable() {
             public void run() {
                 emitters.remove(emitter); 
+                System.out.println("remove timeout");
             }
         });
         

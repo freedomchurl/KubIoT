@@ -1,10 +1,56 @@
-# KubIoT
+# 대규모 IoT 네트워크 통합 플랫폼 : Industry 4.0 과 IIoT 를 위한 인프라 구축
+
+
 2020 오픈인프라 경진대회 - 밴인사이드 팀의 프로젝트입니다.
 
-"Kubernetes/KubeEdge 를 이용한 대규모 IoT 네트워크 통합 플랫폼 : Industry 4.0 과 IIoT 를 위한 인프라 구축"을 진행합니다.
+"대규모 IoT 네트워크 통합 플랫폼 : Industry 4.0 과 IIoT 를 위한 인프라 구축"을 진행합니다.
+
+자세한 설명은 PPT를 참고해주세요.
 
 
-실행 파일
+
+---
+
+
+
+## 주요 기능
+
+- HTTP와 MQTT 로 실수형 데이터, 이미지 데이터를 다루는 IoT 기기를 대상으로 합니다.
+
+- 기능
+
+  - 데이터 수집 기능 
+
+    * 수집한 데이터는 네이버 클라우드 플랫폼의 Object Storage와 연동이 가능합니다.
+
+  - IoT 기기 제어 기능
+
+    *  웹 대시보드를 통해 원하는 제어 명령을 IoT 기기로 전송 가능합니다.
+
+  - 데이터 분석 기능
+
+    * 이상 데이터 범위를 등록하면, 이상 데이터가 들어왔을 시 기록됩니다.
+
+    * API 를 이용하여, K-means, Logistic Regression 등의 분석이 가능합니다.
+
+  -  안드로이드 Push 알림 기능
+
+    * 분석 서비스에서 이상 데이터 감지 시, 어플로 Push 알림을 제공합니다.
+
+  - 웹 대시보드 기능
+
+    * 관리자는 웹 대시보드를 통해 플랫폼 이용이 가능합니다.
+    * 장치 리스트, 분석 현황 확인, 그룹 관리, 알림 리스트 등을 확인 가능합니다. 
+
+  
+
+![그림1](C:\Users\JIMIN\Desktop\그림1.png)
+
+___
+
+
+
+## 실행환경 구축
 
 1) `git pull " git repository "`
 
@@ -26,33 +72,38 @@
 
   - 테이블 초기 생성은 db.sh의 명령문 실행.
 
-  5)  이미지 컨테이너 실행
+5)  이미지 컨테이너 실행
 
-  ~/FinalKubiot 홈페이지로 이동 후,
+~/FinalKubiot 홈페이지로 이동 후,
 
-  `docker-compose up -d` 를 통해 실행
+`docker-compose up -d` 를 통해 실행
 
-  6) 웹페이지 접속 : "서버IP" PORT 7676 번 포트.
+6) 이미지 컨테이너 종료
 
-  7) 테스트 클라이언트
+``docker-compose down``
 
-  ​	-  HTTP 이미지 : ImageWebClient ( Run with spring boot )
+6) 웹페이지 접속 : "서버IP" PORT 7676 번 포트.
 
-      -  HTTP 실수형 : TestWebClient (Run with spring boot)
-      -  MQTT 이미지 : ImageMQTTClient ( Run with spring boot )
-      -  MQTT 실수형 : TestMQTTClient 폴더에서 node floatMQTTClient.js
-      -  안드로이드 : KubIoTAndroid 폴더 ( 안드로이드 스튜디오 프로젝트 )
+7) 테스트 클라이언트
 
-  8) HTTP 프로토콜
+​	-  HTTP 이미지 : ImageWebClient ( Run with spring boot )
 
-  - 실수형 : /sendFData
-    - POST
-    - Request : JSON : (string) deviceId, type, data double 배열, time String 배열, regi (String 0 or 1)
-    - Return : JSON : status  0
+    -  HTTP 실수형 : TestWebClient (Run with spring boot)
+    -  MQTT 이미지 : ImageMQTTClient ( Run with spring boot )
+    -  MQTT 실수형 : TestMQTTClient 폴더에서 node floatMQTTClient.js
+    -  안드로이드 : KubIoTAndroid 폴더 ( 안드로이드 스튜디오 프로젝트 )
 
-  - 이미지 : sendBData
-    - POST
-    - JSON {deviceId, type, regi, time} !@ 이미지BYTEarr
+8) HTTP 프로토콜
+
+( {} 로 표시된 부분은 JSON 데이터를 의미 )
+
+- 실수형 : /sendFData
+  - POST { (string) deviceId, type, data double 배열, time String 배열, regi (String 0 or 1) }
+  
+- 이미지 : /sendBData
+  - POST {deviceId, type, regi, time} !@ 이미지BYTEarr
+
+  => 공통응답 { status : 0 , regi : 1 / 0 }
 
 
 
@@ -62,6 +113,17 @@
 
   \-   이미지 : JSON {deviceId, type, regi, time} !@ 이미지BYTEarr
 
+  => 공통응답 { status : 0 , regi : 1 / 0 }
 
 
-  => 공통으로 응답은 status : 0 , regi : 1 / 0
+
+---
+
+
+
+## 서비스 아키텍쳐
+
+* 각각의 서비스가 마이크로 서비스로 구성된 MSA 구조.
+* 각각의 서비스를 Docker를 이용하여 컨테이너화 하였습니다.
+
+![전체구조](C:\Users\JIMIN\Desktop\전체구조.PNG)

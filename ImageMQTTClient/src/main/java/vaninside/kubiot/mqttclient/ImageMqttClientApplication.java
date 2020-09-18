@@ -32,7 +32,7 @@ public class ImageMqttClientApplication {
 	private static final String MQTT_SERVER_ADDRES= "tcp://101.101.219.90:1883";
 	private static IMqttClient instance;
 	
-	public static String ID = "MQTTI01"; // 디바이스 아이디
+	public static String ID = "MQTTI02"; // 디바이스 아이디
 	public static String TYPE = "image/png"; // 디바이스 데이터 형식
 	public static String TOPIC = "topic"; // 서버 토픽
 	
@@ -102,7 +102,7 @@ public class ImageMqttClientApplication {
 		//File file = new File(".\\up_tri.png");
         byte[] imageInByte;
         
-        BufferedImage originalImage = ImageIO.read(new File(".\\up_tri.png"));
+        BufferedImage originalImage = ImageIO.read(new File("./up_tri.png"));
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ImageIO.write(originalImage, "png", baos);
         baos.flush();

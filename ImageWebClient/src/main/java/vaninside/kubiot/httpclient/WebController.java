@@ -40,7 +40,7 @@ public class WebController {
 	//String collector_url = "http://101.101.219.90:8080/"; // 수집 서버
 	String collector_url = "http://101.101.219.90:8081/sendBData"; // 수집 서버
 	
-	public static String ID = "HTTPI01"; // 디바이스 아이디
+	public static String ID = "HTTPI03"; // 디바이스 아이디
 	public static String TYPE = "image/png"; // 디바이스 데이터 형식
 	
 	public static String regi = new String("0");   // 등록 상태
@@ -73,7 +73,7 @@ public class WebController {
         
        
         try {
-        	 BufferedImage originalImage = ImageIO.read(new File(".\\down_tri.png"));
+        	 BufferedImage originalImage = ImageIO.read(new File("./down_tri.png"));
              ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			ImageIO.write(originalImage, "png", baos);
 			 baos.flush();
@@ -96,10 +96,10 @@ public class WebController {
 		
 		Double data = Math.random();
 		//String msg = "{\"deviceId\":\""+ ID+ "\", \"type\":\"" + TYPE +"\",\"regi\":\"" +regi+"\", \"time\":[\"" + time1 + "\"], \"data\":["+data+"]}";
- 		System.out.println("전송 데이터 : "+data);
+ 		System.out.println("이미지를 전송하였습니다");
 		HttpEntity<String> entity = new HttpEntity<>(final_msg,headers);
 		String answer = restTemplate.postForObject(collector_url, entity, String.class);
-		System.out.println(answer);
+		//System.out.println(answer);
 		receive(answer);
 	}
 	
@@ -141,7 +141,7 @@ public class WebController {
 				receive(answer);
 				*/ 
 		  		// 이미지는 제어가 없음.
-		  	} else {
+		  	} else if(obj.get("req") != null){
 
 				  // 제어 실행.
 				   control(obj.get("req").toString());

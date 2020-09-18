@@ -21,7 +21,7 @@ public class WebController {
 	//String collector_url = "http://101.101.219.90:8080/"; // 수집 서버
 	String collector_url = "http://101.101.219.90:8081/sendFData"; // 수집 서버
 	
-	public static String ID = "HTTPF01"; // 디바이스 아이디
+	public static String ID = "HTTPF04"; // 디바이스 아이디
 	public static String TYPE = "float"; // 디바이스 데이터 형식
 	
 	public static String regi = new String("0");   // 등록 상태
@@ -37,7 +37,7 @@ public class WebController {
 		// 제어와 이벤트 스트림 연결하기.
 	}
 	
-	@Scheduled(cron = "*/4 * * * * *")
+	@Scheduled(cron = "*/2 * * * * *")
 	public void send() {
 		// http send
 		HttpHeaders headers = new HttpHeaders();
@@ -84,8 +84,10 @@ public class WebController {
 		    // 그룹 추가
 		    groupList.add((String)obj.get("name"));
 		  	}
+		  else if(obj.get("req") != null){
 		  // 제어 실행.
 		  control(obj.get("req").toString());
+		  }
 	}
 	
 	public void control(String msg) {

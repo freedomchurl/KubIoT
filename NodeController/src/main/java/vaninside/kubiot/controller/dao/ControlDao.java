@@ -67,7 +67,7 @@ public class ControlDao implements IControlDao{
 			String sql = String.format("select device.name from groupregi inner join device "
 					+ "where groupregi.deviceid=device.id and groupid = %d;", groupId);
 	        rs= stat.executeQuery(sql);
-	        if(rs.next()) {
+	        while(rs.next()) {
 	        	System.out.printf("%s\n"
                         ,rs.getString("name"));
 	        	result.add(rs.getString("name"));

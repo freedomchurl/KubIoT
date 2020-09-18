@@ -23,10 +23,10 @@ public class TestWebClientApplication {
 		
 	    WebClient client = WebClient.create("http://localhost:8087");
 	    ParameterizedTypeReference<ServerSentEvent<String>> type
-	     = new ParameterizedTypeReference<ServerSentEvent<String>>() {};
+	     = new ParameterizedTypeReference<ServerSentEvent<String>>(){};
 	
 	     WebClient cl =  WebClient.builder()
-	    		    .baseUrl("http://101.101.219.90:8083?id=\'HTTPF01\'")
+	    		    .baseUrl("http://101.101.219.90:8083?id=\'HTTPF04\'")
 	    		    .clientConnector((ClientHttpConnector) new ReactorClientHttpConnector(
                  HttpClient.create().followRedirect(true)
          ))
@@ -37,7 +37,7 @@ public class TestWebClientApplication {
 	      .uri("/connect").retrieve()
 	      .bodyToFlux(type);
 	 
-	    eventStream.subscribe(System.out::println);
+	    eventStream.subscribe(content ->System.out.println("관리자 제어 :" + content.data()));
 
 	}
 
